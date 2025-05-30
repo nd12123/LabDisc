@@ -20,6 +20,22 @@ export const toolbox = {
           {
             kind: 'block',
             type: 'display_text'
+          },
+          {
+            kind: 'block',
+            type: 'display_var'
+          },
+          {
+            kind: 'block',
+            type: 'clear_screen'
+          },
+          {
+            kind: 'block',
+            type: 'display_sensor'
+          },
+          {
+            kind: 'block',
+            type: 'horizontal_bar'
           }
         ]
       },
