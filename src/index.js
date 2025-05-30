@@ -1,14 +1,21 @@
 import * as Blockly from 'blockly/core';
 import 'blockly/blocks';
-import 'blockly/javascript';
 import * as En from 'blockly/msg/en';
 
-import './blocks/inputblocks.js'
+import { javascriptGenerator} from 'blockly/javascript';
+
+import './blocks/input/common.js'
+import './blocks/input/physio.js'
+import './blocks/input/biochem.js'
+import './blocks/input/enviro.js'
+//import './blocks/inputblocks.js'
 import './blocks/loopblocks.js'
 import './blocks/mathblocks.js'
-import './blocks/displayblocks.js'
+import './blocks/outputblocks.js'
 
-import { toolbox } from './toolbox.js';
+import './generators/output.js'
+
+import { getToolboxForModel } from './toolboxes/toolbox_factory.js';
 
 import { FieldColour } from '@blockly/field-colour';
 
@@ -16,12 +23,63 @@ Blockly.setLocale(En);
 
 Blockly.fieldRegistry.register('field_colour', FieldColour);
 
-window.sensorValues = {
+window.sensorValues = { //example, gotta be polling
   1: 22.4,
   2: 570,
   3: 7.2
 };
 
+function getModelFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('model') || 'default';
+}
+
+const currentModel = getModelFromURL();
+console.log('Selected model:', currentModel);
+
+const toolbox = getToolboxForModel(currentModel);
+
+
+//running JS code
+document.getElementById("runButton").addEventListener("click", () => {
+  const code = javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace());
+  console.clear();
+  console.log("Generated JS:", code);
+  try {
+    eval(code);
+  } catch (e) {
+    console.error("Execution error:", e);
+  }
+});
+
+document.getElementById("stopButton").addEventListener("click", () => {
+  clearScreen(); // очистим UI
+  console.clear(); // по желанию
+  // Здесь можно сбрасывать состояние, отменять таймеры
+});
+
+window.playBeep = function (volume = 0.5, duration = 500) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(440, ctx.currentTime); // A4
+  gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+
+  oscillator.connect(gainNode);
+  gainNode.connect(ctx.destination);
+
+  oscillator.start();
+  oscillator.stop(ctx.currentTime + duration / 1000);
+};
+
+window.clearScreen = function () {
+  const el = document.getElementById("outputArea");
+  if (el) {
+    el.innerHTML = "";
+  }
+};
 
 
 window.displayVariable = function (sensorId, unit, color, bg, position) {

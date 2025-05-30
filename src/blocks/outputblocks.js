@@ -1,10 +1,43 @@
 import * as Blockly from 'blockly/core';
 
+
+Blockly.Blocks['beep'] = {
+  init: function () {
+    this.jsonInit({
+      "type": "beep",
+      "message0": "beep volume %1 duration %2 ms",
+      "args0": [
+        {
+          "type": "field_number",
+          "name": "VOLUME",
+          "value": 0.5,
+          "min": 0,
+          "max": 1,
+          "precision": 0.1
+        },
+        {
+          "type": "field_number",
+          "name": "DURATION",
+          "value": 500,
+          "min": 1
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": 200,
+      "tooltip": "Play a beep sound",
+      "helpUrl": ""
+    });
+  }
+};
+
+
+
 Blockly.Blocks['display_text'] = {
   init: function () {
     this.jsonInit({
       "type": "display_text",
-      "message0": "show text %1 with color %2 background %3 at %4",
+      "message0": "display text %1 with color %2 background %3 at %4",
       "args0": [
         {
           "type": "field_input",
@@ -59,7 +92,7 @@ Blockly.JavaScript['display_text'] = function (block) {
 Blockly.Blocks["display_var"] = {
     init: function() {
       this.jsonInit({
-        "message0": "display variable %1 %2 %3", //%{BKY_DISPLAY_VAR}
+        "message0": "display variable %1 with color %2 background %3 at %4", //%{BKY_DISPLAY_VAR}
         "args0": [
           {
             "type": "input_value",
@@ -67,30 +100,28 @@ Blockly.Blocks["display_var"] = {
             "check": "Number"
           },
           {
-            "type": "field_dropdown",
-            "name": "position",
-            "options": [
-              [
-                "top",//%{BKY_TOP}
-                "xploris.POSITION_TOP"
-              ],
-              [
-                "center", //%{BKY_CENTER}
-                "xploris.POSITION_CENTER"
-              ],
-              [
-                "bottom",
-                "xploris.POSITION_BOTTOM"
-              ],
-            ]
+            "type": "field_colour",
+            "name": "COLOR"
           },
           {
             "type": "field_colour",
-            "name": "colour",
-            "colour": '#649FEF',
+            "name": "BG"
           },
-  
+          {
+            "type": "field_dropdown",
+            "name": "POSITION",
+            "options": [
+              ["Top", "top"],
+              ["Center", "center"],
+              ["Bottom", "bottom"]
+            ]
+          }
         ],
+        "fields": {
+          "COLOR": "#649FEF",
+          "BG": "#ffffff",
+          "POSITION": "center"
+        },
         "previousStatement": null,
         "nextStatement": null,
         "colour": "#70AA55"
@@ -231,16 +262,4 @@ Blockly.Blocks['horizontal_bar'] = {
     });
   }
 };
-/*
-Blockly.JavaScript['horizontal_bar'] = function (block) {
-  const id = block.getFieldValue('SENSOR_ID');
-  const min = block.getFieldValue('MIN');
-  const max = block.getFieldValue('MAX');
-  const color1 = block.getFieldValue('COLOR1');
-  const color2 = block.getFieldValue('COLOR2');
-  const steps = block.getFieldValue('STEPS');
 
-  const code = `drawBar(${id}, ${min}, ${max}, "${color1}", "${color2}", ${steps});\n`;
-  return code;
-};
-*/

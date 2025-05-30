@@ -1,17 +1,5 @@
-export const toolbox = {
-    kind: 'categoryToolbox',
-    contents: [
-      {
-        kind: 'category',
-        name: 'Input',
-        colour: '#649FEF',
-        contents: [ //is_button_pressed
-          {
-            kind: 'block',
-            type: 'get_sensor_value'
-          }
-        ]
-      },
+
+      export const commonCategories = [
       {
         kind: 'category',
         name: 'Output',
@@ -111,6 +99,18 @@ export const toolbox = {
           },
           */
         ]
-      }
-    ]
-  };
+      }]
+
+      /*
+{
+        kind: 'category',
+        name: 'Input',
+        colour: '#649FEF',
+        contents: [ //is_button_pressed
+          {
+            kind: 'block',
+            type: 'get_sensor_value'
+          }
+        ]
+      },
+      */
