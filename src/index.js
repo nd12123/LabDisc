@@ -19,6 +19,11 @@ import { getToolboxForModel } from './toolboxes/toolbox_factory.js';
 
 import { FieldColour } from '@blockly/field-colour';
 
+import './styles/toolbox_style.css';
+import { MyOwnDarkTheme } from './themes/blockly_theme.js';
+
+
+
 Blockly.setLocale(En);
 
 Blockly.fieldRegistry.register('field_colour', FieldColour);
@@ -140,11 +145,40 @@ window.drawBar = function (sensorId, min, max, color1, color2, steps) {
 
 
 
+
+const movements = {scrollbars: { horizontal: true, vertical: true},drag: true,wheel: true};
+const zoom = {controls: true, wheel: true, startScale: 1.0, maxScale: 3, minScale: 0.3, scaleSpeed: 1.2, pinch: true}
+
 window.addEventListener('DOMContentLoaded', () => {
-  Blockly.inject('blocklyDiv', {
-    toolbox: toolbox
+  Blockly.inject('blocklyDiv', { //workspace =  
+    toolbox: toolbox,
+    theme: MyOwnDarkTheme,
+    renderer: 'zelos',
+    zoom: zoom,
+    move: movements,
+    trashcan: true, 
+    readOnly: false,
+    //renderer:'zelos', readOnly: false,
+    media: './media' //media from blockly? // ./blockly/media
   });
 
+  window.Blockly = Blockly;
+  window.workspace = Blockly.getMainWorkspace(); // или твой workspace
+
+  //console.log(workspace.getTheme())
 });
 
 
+//workspace = Blockly.GetMainWorkspace()
+//var tree = workspace.toolbox.contents_; //not toolbox_
+//workspace.toolbox.setSelectedItem(tree[3]); //Select INPUT category as default
+//console.log(Blockly.getMainWorkspace())
+//window.workspace = Blockly.Workspace;
+//var tree = workspace.toolbox.contents_;
+//workspace.toolbox.setSelectedItem(tree[3]);
+//window.Blockly = Blockly;
+
+
+//window.workspace.toolbox.flyout.autoClose = false;
+//workspace = Blockly.GetMainWorkapace
+//console.log(workspace.GetTheme())

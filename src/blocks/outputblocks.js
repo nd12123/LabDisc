@@ -1,6 +1,24 @@
 import * as Blockly from 'blockly/core';
 
 
+Blockly.Blocks['pause'] = {
+    init: function() {
+      this.jsonInit({
+        "message0": "pause for %1 (Ms)",//%{BKY_PAUSE_TEXT} ,
+        "args0": [
+          {
+            "type": "input_value",
+            "name": "INPUT",
+            "check": "Number"
+          },
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#569FA8"
+      });
+    }
+};
+
 Blockly.Blocks['beep'] = {
   init: function () {
     this.jsonInit({
@@ -24,7 +42,7 @@ Blockly.Blocks['beep'] = {
       ],
       "previousStatement": null,
       "nextStatement": null,
-      "colour": 200,
+      "colour": '#569FA8',//200,
       "tooltip": "Play a beep sound",
       "helpUrl": ""
     });
@@ -63,31 +81,19 @@ Blockly.Blocks['display_text'] = {
         }
       ],
       "fields": {
-        "COLOR": "#649FEF",
+        "COLOR": '#569FA8',//"#649FEF",
         "BG": "#ffffff",
         "POSITION": "center"
       },
       "previousStatement": null,
       "nextStatement": null,
-      "colour": 70,
+      "colour": "#569FA8",//bar_70,
       "tooltip": "Show text on screen with styling",
       "helpUrl": ""
     });
   }
 };
 
-// (опционально) генератор
-/*
-Blockly.JavaScript['display_text'] = function (block) {
-  const text = block.getFieldValue('TEXT');
-  const color = block.getFieldValue('COLOR');
-  const bg = block.getFieldValue('BG');
-  const position = block.getFieldValue('POSITION');
-
-  const code = `displayText("${text}", "${color}", "${bg}", "${position}");\n`;
-  return code;
-};
-*/
   
 Blockly.Blocks["display_var"] = {
     init: function() {
@@ -124,7 +130,7 @@ Blockly.Blocks["display_var"] = {
         },
         "previousStatement": null,
         "nextStatement": null,
-        "colour": "#70AA55"
+        "colour": '#569FA8',// "#70AA55"
       })
     }
   }
@@ -136,7 +142,7 @@ Blockly.Blocks["display_var"] = {
           .appendField("clear screen");//Blockly.Msg["CLEAR_SCREEN_TEXT"]);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour("#70AA55");
+      this.setColour("#569FA8");
    this.setTooltip("");
    this.setHelpUrl("");
     }
@@ -189,26 +195,30 @@ Blockly.Blocks['display_sensor'] = {
       },
       "previousStatement": null,
       "nextStatement": null,
-      "colour": 90,
+      "colour": "#569FA8",//90,
       "tooltip": "Show the current sensor value on screen",
       "helpUrl": ""
     });
   }
 };
 
-
-  /*
-Blockly.JavaScript['display_variable'] = function (block) {
-  const sensorId = block.getFieldValue('SENSOR_ID');
-  const unit = block.getFieldValue('UNIT');
-  const color = block.getFieldValue('COLOR');
-  const bg = block.getFieldValue('BG');
-  const position = block.getFieldValue('POSITION');
-
-  const code = `displayVariable(${sensorId}, "${unit}", "${color}", "${bg}", "${position}");\n`;
-  return code;
+Blockly.Blocks['delay'] = {
+  init: function() {
+    this.jsonInit({"message0": "delay for %1 (Ms)", //%{BKY_DELAY_TEXT}
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "INPUT",
+          "check": "Number"
+        },
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": "#D679B3",
+    });
+  }
 };
-*/
+
 
 Blockly.Blocks['horizontal_bar'] = {
   init: function () {
@@ -256,10 +266,37 @@ Blockly.Blocks['horizontal_bar'] = {
       },
       "previousStatement": null,
       "nextStatement": null,
-      "colour": 120,
+      "colour": "#569FA8",//120,
       "tooltip": "Display sensor value as a color-shifting bar",
       "helpUrl": ""
     });
   }
 };
 
+
+// (опционально) генератор
+/*
+Blockly.JavaScript['display_text'] = function (block) {
+  const text = block.getFieldValue('TEXT');
+  const color = block.getFieldValue('COLOR');
+  const bg = block.getFieldValue('BG');
+  const position = block.getFieldValue('POSITION');
+
+  const code = `displayText("${text}", "${color}", "${bg}", "${position}");\n`;
+  return code;
+};
+*/
+
+
+  /*
+Blockly.JavaScript['display_variable'] = function (block) {
+  const sensorId = block.getFieldValue('SENSOR_ID');
+  const unit = block.getFieldValue('UNIT');
+  const color = block.getFieldValue('COLOR');
+  const bg = block.getFieldValue('BG');
+  const position = block.getFieldValue('POSITION');
+
+  const code = `displayVariable(${sensorId}, "${unit}", "${color}", "${bg}", "${position}");\n`;
+  return code;
+};
+*/

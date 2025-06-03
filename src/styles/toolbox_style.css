@@ -1,0 +1,79 @@
+/*very questionable*/
+body {
+      
+  background-color: #f3f3f3;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+h1 {
+  font-weight: normal;
+  font-size: 140%;
+}
+table {
+  height: 100%;
+  width: 100%;
+}
+#blocklyArea {
+  height: 99%;
+  background: #fc9;
+}
+
+
+
+
+/* src/styles/toolbox_style.css */
+.blocklyTreeLabel {
+  font-size: 16px; /* было 12–14px по умолчанию */
+}
+.blocklyText {
+  font-size: 16px !important;
+}
+
+
+.blocklyTreeLabel {
+    color: #222;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+  }
+  
+  .blocklyToolboxContents {
+    margin-top: 15px;
+    padding: 0px;
+  }
+  
+  .blocklyTreeRow {
+    padding: 5px 0;
+    margin-bottom: .5em;
+    border-radius: 3px;
+  }
+  
+  .blocklyToolbox {
+    background-color: #F4DEC8 !important;
+    padding: 8px 0;
+    border-radius: 20px 0 0 20px;
+    box-shadow: inset -1px 0 0 rgba(0,0,0,0.1);
+  }
+  
+  .blocklyMainBackground {
+    stroke: none;
+  }
+  
+  .blocklyScrollbarVertical {
+    fill: #F4DEC8;
+  }
+  
+  .blocklyFlyoutBackground {
+    fill: #F4DEC8;
+  }
+  
+  .blocklySvg {
+    display: block;
+    border-radius: 20px;
+    background-color: #F9F6F0;
+  }
+  
+  .blocklyFlyout {
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: 0 20px 20px 0;
+  }
+  

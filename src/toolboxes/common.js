@@ -3,7 +3,7 @@
       {
         kind: 'category',
         name: 'Output',
-        colour: '#70AA55',
+        colour: '#569FA8', //70AA55 E7A900-speaker 649FEF-input D679B3-loops DD2121-math FF962C-vars ("custom": "VAR") 565380-logic
         contents: [
           {
             kind: 'block',
@@ -27,20 +27,18 @@
             kind: 'block',
             type: 'beep'
           },
-          { 
-            kind: 'block', 
-            type: 'delay' 
-          },
           {
             kind: 'block',
             type: 'clear_screen'
           },
+          
+          { kind: 'block', type: 'pause' },
         ]
       },
       {
         kind: 'category',
         name: 'Logic',
-        colour: '#5C81A6',
+        colour: '#565380',
         contents: [
           { kind: 'block', type: 'controls_if' },
           { kind: 'block', type: 'logic_compare' }
@@ -49,8 +47,8 @@
       {
         kind: 'category',
         name: 'Variables',
-        custom: 'VARIABLE',
-        colour: '#5C81A6',
+        custom: 'VARIABLE', //_DYNAMIC
+        colour: '#FF962C',//'#5C81A6',
         /*
         contents: [
           { kind: 'block', type: 'variables_get' },
@@ -61,18 +59,21 @@
       {
         kind: 'category',
         name: 'Loops',
-        colour: '#5CA65C',
+        colour: '#D679B3',//'#5CA65C',
         contents: [ /*{ kind: 'block', type: 'controls_repeat_ext' }, */
           { kind: 'block', type: 'controls_whileUntil' },
           { kind: 'block', type: 'controls_whileUntil' },
-          { kind: 'block', type: 'pause' },
 
+          { 
+            kind: 'block', 
+            type: 'delay' 
+          },
         ]
       },
       {
         kind: 'category',
         name: 'Math',
-        colour: '#5C68A6',
+        colour: '#DD2121',// '#5C68A6',
         contents: [
           { kind: 'block', type: 'math_number' },
           { kind: 'block', type: 'math_arithmetic' },

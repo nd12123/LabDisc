@@ -1,40 +1,6 @@
 import * as Blockly from 'blockly/core';
 
 
-Blockly.Blocks['delay'] = {
-  init: function() {
-    this.jsonInit({"message0": "delay for %1 (Ms)", //%{BKY_DELAY_TEXT}
-      "args0": [
-        {
-          "type": "input_value",
-          "name": "INPUT",
-          "check": "Number"
-        },
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "colour": "#D679B3",
-    });
-  }
-};
-
-Blockly.Blocks['pause'] = {
-    init: function() {
-      this.jsonInit({
-        "message0": "pause for %1 (Ms)",//%{BKY_PAUSE_TEXT} ,
-        "args0": [
-          {
-            "type": "input_value",
-            "name": "INPUT",
-            "check": "Number"
-          },
-        ],
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": "#D679B3"
-      });
-    }
-};
 Blockly.Blocks['forever_loop_clean'] = {
     init: function() {
       this.appendDummyInput()

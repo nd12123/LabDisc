@@ -1,7 +1,7 @@
 export const inputBlocksPhysio = {
     kind: 'category',
     name: 'Input',
-    colour: '#5CA699',
+    colour: '#649FEF',//'#5CA699',
     contents: [
         { kind: 'block', type: 'get_temperature' },
         { kind: 'block', type: 'get_light' },
