@@ -14,6 +14,7 @@ import './blocks/mathblocks.js'
 import './blocks/outputblocks.js'
 
 import './generators/output.js'
+import './generators/loops.js'
 
 import { getToolboxForModel } from './toolboxes/toolbox_factory.js';
 
@@ -22,6 +23,18 @@ import { FieldColour } from '@blockly/field-colour';
 import './styles/toolbox_style.css';
 import { MyOwnDarkTheme } from './themes/blockly_theme.js';
 
+//import { getSensorValue } from './mock/labdisc.js';
+
+//window.getSensorValue = getSensorValue;
+// mock sensor layer for development
+window.__mockSensorStore = {};
+window.getSensorValue = function(id) {
+  return window.__mockSensorStore[id] ?? 0;
+};
+window.setSensorValue = function(id, value) {
+  window.__mockSensorStore[id] = value;
+  console.log(`Sensor ${id} set to ${value}`);
+};
 
 
 Blockly.setLocale(En);
@@ -34,11 +47,61 @@ window.sensorValues = { //example, gotta be polling
   3: 7.2
 };
 
+let runner = null;
+
+function runCode(code) {
+  stopCode();
+
+  try {
+    runner = new Function(`
+      (async () => {
+        ${code}
+      })();
+    `);
+    runner();
+  } catch (e) {
+    console.error("Execution error:", e);
+  }
+}
+let activeTimers = [];
+
+function stopCode() {
+  if (typeof stopPolling === 'function') stopPolling(); // если где-то остался
+  activeTimers.forEach(clearTimeout);
+  activeTimers = [];
+}
+
+window.pause = (ms) => new Promise(res => {
+  const id = setTimeout(res, ms);
+  activeTimers.push(id);
+});
+
+
+
+/*
+let pollingId = null;
+
+function startPolling() {
+  stopPolling(); // безопасно
+  pollingId = setInterval(() => {
+    // например
+    console.log("Polling...", getSensorValue('1'));
+  }, 333);
+}
+
+function stopPolling() {
+  if (pollingId !== null) {
+    clearInterval(pollingId);
+    pollingId = null;
+    console.log('Polling stopped');
+  }
+}
+*/
+
 function getModelFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('model') || 'default';
 }
-
 const currentModel = getModelFromURL();
 console.log('Selected model:', currentModel);
 
@@ -50,17 +113,15 @@ document.getElementById("runButton").addEventListener("click", () => {
   const code = javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace());
   console.clear();
   console.log("Generated JS:", code);
-  try {
-    eval(code);
-  } catch (e) {
-    console.error("Execution error:", e);
-  }
+  runCode(code)
 });
 
 document.getElementById("stopButton").addEventListener("click", () => {
   clearScreen(); // очистим UI
   console.clear(); // по желанию
   // Здесь можно сбрасывать состояние, отменять таймеры
+  //stopPolling();
+  stopCode();
 });
 
 window.playBeep = function (volume = 0.5, duration = 500) {

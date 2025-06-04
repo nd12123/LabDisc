@@ -41,7 +41,24 @@
         colour: '#565380',
         contents: [
           { kind: 'block', type: 'controls_if' },
-          { kind: 'block', type: 'logic_compare' }
+          { kind: 'block', type: 'logic_compare' },
+          
+      {
+        "kind": "block",
+        "type": "logic_negate"
+      },
+      {
+        "kind": "block",
+        "type": "logic_operation" //default
+      },
+      {
+        "kind":"block",
+        "type":"controls_if",
+        "extraState":{
+          "hasElse":"true"
+        },
+      },
+          //true/false?
         ]
       },
       {
@@ -62,8 +79,12 @@
         colour: '#D679B3',//'#5CA65C',
         contents: [ /*{ kind: 'block', type: 'controls_repeat_ext' }, */
           { kind: 'block', type: 'controls_whileUntil' },
-          { kind: 'block', type: 'controls_whileUntil' },
-
+          //{ kind: 'block', type: 'controls_whileUntil' },
+          //break?
+          {
+            "kind": "block",
+            "type": "controls_repeat_ext"
+          },
           { 
             kind: 'block', 
             type: 'delay' 
