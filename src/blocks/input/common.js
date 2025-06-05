@@ -30,6 +30,7 @@ for (const sensor of sensors) {
     }
   };
 
+  //JavaScript for asking Sensor's value
   javascriptGenerator.forBlock[sensor.name] = function (block) {
     return [`getSensorValue(${sensor.id})`, javascriptGenerator.ORDER_ATOMIC];
   };

@@ -21,6 +21,10 @@
           */
           {
             kind: 'block',
+            type: 'bar' //horizontal_bar
+          },
+          {
+            kind: 'block',
             type: 'horizontal_bar'
           },
           {
@@ -84,6 +88,10 @@
           {
             "kind": "block",
             "type": "controls_repeat_ext"
+          },
+          {
+            "kind": "block",
+            "type": "forever_loop_clean"
           },
           { 
             kind: 'block', 

@@ -4,7 +4,7 @@ import * as Blockly from 'blockly/core';
 Blockly.Blocks['forever_loop_clean'] = {
     init: function() {
       this.appendDummyInput()
-      .appendField(Blockly.Msg["FOREVER_LOOP_TEXT"]); //"forever"
+      .appendField("forever"); //""Blockly.Msg["FOREVER_LOOP_TEXT"]
       this.appendStatementInput("comands")
           .setCheck(null)
       this.setPreviousStatement(true, null);

@@ -220,6 +220,55 @@ Blockly.Blocks['delay'] = {
 };
 
 
+
+Blockly.Blocks['bar'] = {
+  init: function () {
+    this.jsonInit({
+      "type": "horizontal_bar",
+      "message0": "bar from color %1 to color %2 in %3 steps", //from %1 to %2
+      "args0": [
+        /*
+        {
+          "type": "field_number",
+          "name": "MIN",
+          "value": 0
+        },
+        {
+          "type": "field_number",
+          "name": "MAX",
+          "value": 100
+        },
+        */
+        {
+          "type": "field_colour",
+          "name": "COLOR1"
+        },
+        {
+          "type": "field_colour",
+          "name": "COLOR2"
+        },
+        {
+          "type": "field_number",
+          "name": "STEPS",
+          "value": 10,
+          "min": 1
+        }
+      ],
+      "fields": {
+        "COLOR1": "#00ff00",
+        "COLOR2": "#ff0000"
+      },
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": "#569FA8",//120,
+      "tooltip": "Display sensor value as a color-shifting bar",
+      "helpUrl": ""
+    });
+  }
+};
+
+
+
 Blockly.Blocks['horizontal_bar'] = {
   init: function () {
     this.jsonInit({
@@ -273,9 +322,8 @@ Blockly.Blocks['horizontal_bar'] = {
   }
 };
 
-
-// (опционально) генератор
 /*
+// (опционально) генератор
 Blockly.JavaScript['display_text'] = function (block) {
   const text = block.getFieldValue('TEXT');
   const color = block.getFieldValue('COLOR');

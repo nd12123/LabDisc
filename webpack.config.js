@@ -2,6 +2,10 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 //const CopyPlugin = require('copy-webpack-plugin');
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
   mode: 'development',
@@ -42,6 +46,11 @@ export default {
     open: true
   },
   resolve: {
-    extensions: ['.js']
+    alias: {
+      '@blocks': path.resolve(__dirname, 'src/blocks/'),
+      '@generators': path.resolve(__dirname, 'src/generators/'),
+      '@styles': path.resolve(__dirname, 'src/styles/')
+    },
+    extensions: ['.js', '.json'],
   },
 };
