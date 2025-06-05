@@ -81,27 +81,6 @@ window.pause = (ms) => new Promise((resolve) => {
 });
 
 
-
-/*
-let pollingId = null;
-
-function startPolling() {
-  stopPolling(); // безопасно
-  pollingId = setInterval(() => {
-    // например
-    console.log("Polling...", getSensorValue('1'));
-  }, 333);
-}
-
-function stopPolling() {
-  if (pollingId !== null) {
-    clearInterval(pollingId);
-    pollingId = null;
-    console.log('Polling stopped');
-  }
-}
-*/
-
 function getModelFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('model') || 'default';
@@ -167,22 +146,46 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.Blockly = Blockly;
-  window.workspace = Blockly.getMainWorkspace(); // или твой workspace
+  window.workspace = Blockly.getMainWorkspace(); // tweaking with the workspace
+  //window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
 
-  //console.log(workspace.getTheme())
+  // 1. Оборачиваем  в setTimeout или ставим после inject’а, чтобы Blockly успел полностью загрузиться.
+  setTimeout(() => {
+  // 2. Берём тулбокс через API:
+  const toolbox = workspace.getToolbox();
+  // 3. Получаем массив айтемов — это объекты ToolboxCategory или ToolboxSeparator в порядке, как они идут в XML/toolbox.js:
+  const categories = toolbox.getToolboxItems();
+  // 4. Убедитесь, что именно столько категорий в вашем XML, иначе IndexError.
+  const defaultCategory = categories[1];
+  // 5. Вызываем setSelectedItem, чтобы «открыть» её:
+  toolbox.setSelectedItem(defaultCategory);
+}, 0);
 });
+/*
+let pollingId = null;
 
+function startPolling() {
+  stopPolling(); // безопасно
+  pollingId = setInterval(() => {
+    // например
+    console.log("Polling...", getSensorValue('1'));
+  }, 333);
+}
 
-//workspace = Blockly.GetMainWorkspace()
-//var tree = workspace.toolbox.contents_; //not toolbox_
-//workspace.toolbox.setSelectedItem(tree[3]); //Select INPUT category as default
+function stopPolling() {
+  if (pollingId !== null) {
+    clearInterval(pollingId);
+    pollingId = null;
+    console.log('Polling stopped');
+  }
+}
+*/
+
 //console.log(Blockly.getMainWorkspace())
 //window.workspace = Blockly.Workspace;
 //var tree = workspace.toolbox.contents_;
 //workspace.toolbox.setSelectedItem(tree[3]);
 //window.Blockly = Blockly;
 
-
-//window.workspace.toolbox.flyout.autoClose = false;
 //workspace = Blockly.GetMainWorkapace
 //console.log(workspace.GetTheme())
