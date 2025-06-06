@@ -28,6 +28,8 @@ import './blocks/patched/loop_patch.js';
 //import { getSensorValue } from './mock/labdisc.js';
 import './logic/display_logic.js';
 
+import { initSaveLoad } from './logic/save_load.js';
+
 //window.getSensorValue = getSensorValue;
 // mock sensor layer for development
 window.__mockSensorStore = {};
@@ -132,8 +134,8 @@ Blockly.fieldRegistry.register('field_colour', FieldColour);
 const movements = {scrollbars: { horizontal: true, vertical: true},drag: true,wheel: true};
 const zoom = {controls: true, wheel: true, startScale: 1.0, maxScale: 3, minScale: 0.3, scaleSpeed: 1.2, pinch: true}
 
-window.addEventListener('DOMContentLoaded', () => {
-  Blockly.inject('blocklyDiv', { //workspace =  
+//window.addEventListener('DOMContentLoaded', () => {
+  const workspace = Blockly.inject('blocklyDiv', { //workspace =  
     toolbox: toolbox,
     theme: MyOwnDarkTheme,
     renderer: 'zelos',
@@ -145,9 +147,14 @@ window.addEventListener('DOMContentLoaded', () => {
     media: './media' //media from blockly? // ./blockly/media
   });
 
+
+  initSaveLoad(workspace);
+
+
   window.Blockly = Blockly;
   window.workspace = Blockly.getMainWorkspace(); // tweaking with the workspace
   //window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
+
 
   // 1. Оборачиваем  в setTimeout или ставим после inject’а, чтобы Blockly успел полностью загрузиться.
   setTimeout(() => {
@@ -159,8 +166,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const defaultCategory = categories[1];
   // 5. Вызываем setSelectedItem, чтобы «открыть» её:
   toolbox.setSelectedItem(defaultCategory);
+
+//console.log(window.workspace)
 }, 0);
-});
+//});
+
+
 /*
 let pollingId = null;
 

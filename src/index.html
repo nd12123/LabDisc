@@ -14,12 +14,19 @@
   </style>
 </head>
 <body>
-  <button id="runButton">▶️ Run</button>
-  <button id="stopButton">⏹ Stop</button>
-  
-  <div id="blocklyDiv"></div>
+  <div style="padding: 10px; background: #FFF9F3; border-bottom: 1px solid #ddd;">
+    <button id="runButton">▶️ Run</button>
+    <button id="stopButton">⏹ Stop</button>
+    <button id="saveBtn">Save Project</button>
+    <button id="loadBtn">Load Project</button>
+    <input type="file" id="loadInput" accept=".json" style="display: none" />
+  </div>
+  <div id="blocklyDiv" style="height: 90%; width: 100%;"></div> <!--height: calc(100vh - 50px);-->
+
   <!--
+    <div id="blocklyDiv"></div>
   <div id="outputArea" style="padding:20px; font-size: 18px;"></div>
+  <script src="index.js"></script>
 -->
 </body>
 </html>

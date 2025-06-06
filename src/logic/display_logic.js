@@ -33,7 +33,7 @@ function getDisplayCanvas() {
   // Отображение текста
   window.displayText = function (text, textColor, bgColor, line = 0) {
 
-console.log("display: ", text, textColor, bgColor, line);
+//console.log("display: ", text, textColor, bgColor, line);
     //const y = lineHeight * line + 16;
     const ctx = getDisplayContext();
   const canvas = ctx.canvas;

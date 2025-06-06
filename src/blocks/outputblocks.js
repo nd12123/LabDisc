@@ -224,7 +224,7 @@ Blockly.Blocks['delay'] = {
 Blockly.Blocks['bar'] = {
   init: function () {
     this.jsonInit({
-      "type": "horizontal_bar",
+      "type": "bar", //horizontal_bar?
       "message0": "bar from color %1 to color %2 in %3 steps", //from %1 to %2
       "args0": [
         /*
