@@ -13,7 +13,7 @@ const sensors = [
   { id: 8, name: 'get_distance', label: 'distance (cm)', unit: 'cm' },
   { id: 9, name: 'get_sound_level', label: 'sound level (dB)', unit: 'dB' },
   { id: 10, name: 'get_air_temp', label: 'air temperature (°C)', unit: '°C' },
-  { id: 11, name: 'get_pressure', label: 'pressure (hPa)', unit: 'hPa' },
+  { id: 11, name: 'get_pressure', label: 'pressure (kPa)', unit: 'kPa' },
 ];
 
 for (const sensor of sensors) {

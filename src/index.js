@@ -30,16 +30,52 @@ import './logic/display_logic.js';
 
 import { initSaveLoad } from './logic/save_load.js';
 
+import { converters } from './conversion/index.js';
+
 //window.getSensorValue = getSensorValue;
 // mock sensor layer for development
+// mock sensor layer for development (RAW)
 window.__mockSensorStore = {};
-window.getSensorValue = function(id) {
+window.getSensorValueRaw = function(id) {
+  // СЫРОЕ значение с устройства (пока — из мок-хранилища)
   return window.__mockSensorStore[id] ?? 0;
 };
 window.setSensorValue = function(id, value) {
   window.__mockSensorStore[id] = value;
   console.log(`Sensor ${id} set to ${value}`);
 };
+
+// Карта соответствий: внутренний ID -> ключ конвертера + пост-обработка (если нужна)
+// Подставляю ТВОИ id из текущих блоков input/common.js (см. твой список)
+const SENSOR_MAP = {
+  // из твоего input_common.js:
+  1:  { key: 'temperature', unit: '°C' },     // temperature (C)
+  2:  { key: 'light', unit: 'lx' },           // light (lx) — НЕЛИНЕЙНО через LUT
+  3:  { key: 'ph', unit: 'pH' },              // pH (если вернёшь из комментария)
+  5:  { /* current mA */ },                   // mA — пока без конверсии (сырое)
+  6:  { /* voltage V */ },                    // V — пока без конверсии (сырое)
+  8:  { /* distance cm */ },                  // cm — пока без конверсии (сырое)
+  9:  { /* sound dB */ },                     // dB — пока без конверсии (сырое)
+  11: { /* pressure kPa */ },                 // kPa — у тебя отдельный датчик (сырое)
+  16: { key: 'low_voltage_mv', unit: 'V', post: (mv) => mv / 1000 }, // хотим вернуть в В
+  17: { /* accelerometer m/s^2 */ },          // аксель — сырое (если нужно — добавим позже)
+
+  // Если у тебя появится барометр отдельным ID — добавь сюда (пример):
+  // 103: { key: 'barometer', unit: 'mBar' },
+};
+
+// ПЕРЕСЧИТАННОЕ значение (теперь ВСЕ блоки автоматически получают правильные числа)
+window.getSensorValue = function(id) {
+  const raw = window.getSensorValueRaw(id);
+  const map = SENSOR_MAP[id];
+  if (!map) return raw;
+
+  const fn = map.key ? converters[map.key] : null;
+  let val = (typeof fn === 'function') ? fn(raw) : raw;
+  if (typeof map.post === 'function') val = map.post(val);
+  return val;
+};
+
 /*
 window.sensorValues = { //example, gotta be polling
   1: 22.4,

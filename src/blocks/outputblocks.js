@@ -4,7 +4,7 @@ import * as Blockly from 'blockly/core';
 Blockly.Blocks['pause'] = {
     init: function() {
       this.jsonInit({
-        "message0": "pause for %1 (Ms)",//%{BKY_PAUSE_TEXT} ,
+        "message0": "pause for %1 (ms)",//%{BKY_PAUSE_TEXT} ,
         "args0": [
           {
             "type": "input_value",
@@ -55,7 +55,7 @@ Blockly.Blocks['display_text'] = {
   init: function () {
     this.jsonInit({
       "type": "display_text",
-      "message0": "display text %1 with color %2 background %3 at %4",
+      "message0": "display text %1 color %2 background %3 at %4",
       "args0": [
         {
           "type": "field_input",
@@ -98,7 +98,7 @@ Blockly.Blocks['display_text'] = {
 Blockly.Blocks["display_var"] = {
     init: function() {
       this.jsonInit({
-        "message0": "display variable %1 with color %2 background %3 at %4", //%{BKY_DISPLAY_VAR}
+        "message0": "display variable %1 color %2 background %3 at %4", //%{BKY_DISPLAY_VAR}
         "args0": [
           {
             "type": "input_value",
@@ -204,7 +204,7 @@ Blockly.Blocks['display_sensor'] = {
 
 Blockly.Blocks['delay'] = {
   init: function() {
-    this.jsonInit({"message0": "delay for %1 (Ms)", //%{BKY_DELAY_TEXT}
+    this.jsonInit({"message0": "delay for %1 (ms)", //%{BKY_DELAY_TEXT}
       "args0": [
         {
           "type": "input_value",
@@ -273,7 +273,7 @@ Blockly.Blocks['horizontal_bar'] = {
   init: function () {
     this.jsonInit({
       "type": "horizontal_bar",
-      "message0": "bar of sensor %1 from %2 to %3 color %4 to %5 in %6 steps",
+      "message0": "display bar of %1 from %2 to %3 color %4 to %5 in %6 steps",
       "args0": [
         {
           "type": "field_dropdown",

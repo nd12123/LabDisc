@@ -10,7 +10,7 @@ const sensors = [
   
   { id: 13, name: 'get_humidity', label: 'phumidity (%)', unit: '%' },
 
-  { id: 11, name: 'get_pressure', label: 'pressure (hPa)', unit: 'hPa' },
+  { id: 11, name: 'get_pressure', label: 'pressure (kPa)', unit: 'kPa' },
   { id: 2, name: 'get_light', label: 'light (lx)', unit: 'lx' },
   { id: 5, name: 'get_current', label: 'current (mA)', unit: 'mA' },
   { id: 6, name: 'get_voltage', label: 'voltage (V)', unit: 'V' },

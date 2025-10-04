@@ -6,7 +6,7 @@ const sensors = [
   { id: 1, name: 'get_temperature', label: 'temperature (C)', unit: '°C' },
   { id: 9, name: 'get_sound_level', label: 'sound level (dB)', unit: 'dB' },
 
-  { id: 11, name: 'get_pressure', label: 'pressure (hPa)', unit: 'hPa' },
+  { id: 11, name: 'get_pressure', label: 'pressure (kPa)', unit: 'kPa' },
   { id: 2, name: 'get_light', label: 'light (lx)', unit: 'lx' },
   { id: 5, name: 'get_current', label: 'current (mA)', unit: 'mA' },
   { id: 6, name: 'get_voltage', label: 'voltage (V)', unit: 'V' },
@@ -15,6 +15,8 @@ const sensors = [
   
   { id: 16, name: 'get_low_voltage', label: 'low voltage (V)', unit: 'V' },
   { id: 17, name: 'get_accelerometer', label: 'Acceleration (m/s**2)', unit: 'm/s*s' },
+  { key: 'barometer', code: 4, unit: 'mBar', decimals: 1, type: 'linear' }, // NEW
+
 /*
   { id: 3, name: 'get_ph', label: 'pH', unit: 'pH' },
   { id: 4, name: 'get_potentiometer', label: 'potentiometer (%)', unit: '%' },
