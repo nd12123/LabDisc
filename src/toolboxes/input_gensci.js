@@ -1,19 +1,16 @@
 export const inputBlocksGensci = {
-    kind: 'category',
-    name: 'Input',
-    colour: '#649FEF',//'#5CA699',
-    contents: [
-        { kind: 'block', type: 'get_temperature' },
-        { kind: 'block', type: 'get_light' },
-        { kind: 'block', type: 'get_ph' },
-        { kind: 'block', type: 'get_potentiometer' },
-        { kind: 'block', type: 'get_current' },
-        { kind: 'block', type: 'get_voltage' },
-        { kind: 'block', type: 'get_light_force' },
-        { kind: 'block', type: 'get_distance' },
-        { kind: 'block', type: 'get_sound_level' },
-        { kind: 'block', type: 'get_air_temp' },
-        { kind: 'block', type: 'get_pressure' }
-      ]
-  };
- 
+  kind: 'category',
+  name: 'Input',
+  colour: '#649FEF',
+  contents: [
+    // твои текущие generic-блоки GenSci — оставляй как было (temperature, light, sound, distance, pressure, ...)
+
+    // ↓↓↓ ДОБАВЛЕНО по спецификации GenSci ↓↓↓
+    { kind: 'block', type: 'gensci_get_humidity' },  // %RH, code 6
+
+    // GPS (5 каналов), code 7
+        { kind: 'block', type: 'biochem_get_gps' },
+
+    { kind: 'block', type: 'gensci_get_microphone' }, // microphone (V), code 33
+  ]
+};

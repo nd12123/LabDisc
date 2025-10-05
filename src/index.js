@@ -3,12 +3,15 @@ import 'blockly/blocks';
 import * as En from 'blockly/msg/en';
 
 import { javascriptGenerator} from 'blockly/javascript';
+import './styles/toolbox_style.css';
+import { MyOwnDarkTheme } from './themes/blockly_theme.js';
+import { FieldColour } from '@blockly/field-colour';
 
 import './blocks/input/common.js'
 import './blocks/input/physio.js'
 import './blocks/input/biochem.js'
 import './blocks/input/enviro.js'
-//import './blocks/inputblocks.js'
+import './blocks/input/gensci.js'
 import './blocks/loopblocks.js'
 import './blocks/mathblocks.js'
 import './blocks/outputblocks.js'
@@ -18,11 +21,6 @@ import '@generators/loops.js'
 import '@generators/input.js'
 
 import { getToolboxForModel } from './toolboxes/toolbox_factory.js';
-
-import { FieldColour } from '@blockly/field-colour';
-
-import './styles/toolbox_style.css';
-import { MyOwnDarkTheme } from './themes/blockly_theme.js';
 
 import './blocks/patched/loop_patch.js';
 //import { getSensorValue } from './mock/labdisc.js';

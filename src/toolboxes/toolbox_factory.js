@@ -3,25 +3,18 @@ import { inputBlocksEnviro } from './input_enviro.js';
 import { inputBlocksPhysio } from './input_physio.js';
 import { inputBlocksBioChem } from './input_biochem.js';
 import { commonCategories } from './common.js';
+import { inputBlocksCommon } from './input_common.js';
 
 export function getToolboxForModel(model) {
-  let inputCategory;
+  
+  const m = (model || '').toLowerCase();
+  let inputCategory = inputBlocksCommon; // ← дефолт: только общий набор
 
-  switch (model.toLowerCase()) {
-    case 'enviro':
-      inputCategory = inputBlocksEnviro;
-      break;
-    case 'physio':
-      inputCategory = inputBlocksPhysio;
-      break;
-    case 'biochem':
-      inputCategory = inputBlocksBioChem;
-      break;
-    case 'gensci':
-    default:
-      inputCategory = inputBlocksGensci;
-      break;
-  }
+  if (m === 'enviro')  inputCategory = inputBlocksEnviro;
+  else if (m === 'physio')  inputCategory = inputBlocksPhysio;
+  else if (m === 'biochem') inputCategory = inputBlocksBioChem;
+  else if (m === 'gensci')  inputCategory = inputBlocksGensci;
+  // иначе остаётся inputBlocksCommon
 
   return {
     kind: 'categoryToolbox',
