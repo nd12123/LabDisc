@@ -5,16 +5,28 @@ import { inputBlocksBioChem } from './input_biochem.js';
 import { commonCategories } from './common.js';
 import { inputBlocksCommon } from './input_common.js';
 
-export function getToolboxForModel(model) {
-  
-  const m = (model || '').toLowerCase();
-  let inputCategory = inputBlocksCommon; // ← дефолт: только общий набор
+function mergeInputCategories(commonCat, modelCat) {
+  if (!modelCat) return commonCat;
+  return {
+    kind: 'category',
+    name: commonCat.name || 'Input',
+    colour: commonCat.colour || '#649FEF',
+    contents: [
+      ...(commonCat.contents || []),
+      ...(modelCat.contents || []),
+    ],
+  };
+}
 
-  if (m === 'enviro')  inputCategory = inputBlocksEnviro;
-  else if (m === 'physio')  inputCategory = inputBlocksPhysio;
-  else if (m === 'biochem') inputCategory = inputBlocksBioChem;
-  else if (m === 'gensci')  inputCategory = inputBlocksGensci;
-  // иначе остаётся inputBlocksCommon
+export function getToolboxForModel(model) {
+ const m = (model || '').toLowerCase();
+  const modelInput =
+    m === 'enviro' ? inputBlocksEnviro :
+    m === 'physio' ? inputBlocksPhysio :
+    m === 'biochem' ? inputBlocksBioChem :
+    m === 'gensci' ? inputBlocksGensci : null;
+
+  const inputCategory = mergeInputCategories(inputBlocksCommon, modelInput);
 
   return {
     kind: 'categoryToolbox',

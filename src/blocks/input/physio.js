@@ -3,72 +3,116 @@ import * as Blockly from 'blockly/core';
 import { javascriptGenerator } from 'blockly/javascript';
 
 /**
- * Внутренние ID — временные (fallback).
+ * Уникальные для Physio сенсоры:
+ *  - low voltage (code 34)
+ *  - accelerometer (code 35) -> единый блок [ax, ay, az]
+ *  - external input 1 (code 32)
+ *  - external input 2 (code 39)
+ * Универсальные (барометр, микрофон и т.п.) берём из input_common.js.
  */
 const SENSOR_ID = {
-  BAROMETER: 303,
-  MICROPHONE_V: 333,
-
-  ACCEL_X: 350,
-  ACCEL_Y: 351,
-  ACCEL_Z: 352,
-
-  EXTERNAL1_V: 321,
-  EXTERNAL2_V: 391,
+  LOW_VOLTAGE: 316, // code 34
+  // fallback-IDs для осей акселя, если нет getSensorValueByCode:
+  ACCEL_X: 350,     // code 35 ch0
+  ACCEL_Y: 351,     // code 35 ch1
+  ACCEL_Z: 352,     // code 35 ch2
+  EXTERNAL1_V: 321, // code 32
+  EXTERNAL2_V: 391, // code 39
 };
 
-function channelFor(name) {
-  if (name.endsWith('_accel_x')) return 0;
-  if (name.endsWith('_accel_y')) return 1;
-  if (name.endsWith('_accel_z')) return 2;
-  return null;
-}
+// low voltage (V)
+Blockly.Blocks['physio_get_low_voltage'] = {
+  init: function () {
+    this.jsonInit({
+      type: 'physio_get_low_voltage',
+      message0: 'low voltage (V)',
+      output: 'Number',
+      colour: 210,
+      tooltip: 'Get low voltage input (V)',
+      helpUrl: ''
+    });
+  }
+};
+javascriptGenerator.forBlock['physio_get_low_voltage'] = function () {
+  if (typeof globalThis?.getSensorValueByCode === 'function') {
+    return ['getSensorValueByCode(34)', javascriptGenerator.ORDER_ATOMIC];
+  }
+  return [`getSensorValue(${SENSOR_ID.LOW_VOLTAGE})`, javascriptGenerator.ORDER_ATOMIC];
+};
 
-// Добавляем: барометр, микрофон, аксель (XYZ), второй внешний вход
-const sensors = [
-  { id: SENSOR_ID.BAROMETER,    code: 4,  name: 'physio_get_barometer',  label: 'barometer (mBar)',       unit: 'mBar' },
-  { id: SENSOR_ID.MICROPHONE_V, code: 33, name: 'physio_get_microphone', label: 'microphone (V)',         unit: 'V'    },
+// accelerometer -> [ax, ay, az] (m/s²)
+Blockly.Blocks['physio_get_accel'] = {
+  init: function () {
+    this.jsonInit({
+      type: 'physio_get_accel',
+      message0: 'acceleration [ax, ay, az] (m/s²)',
+      output: 'Array',
+      colour: 210,
+      tooltip: 'Returns [ax, ay, az] in m/s²',
+      helpUrl: ''
+    });
+  }
+};
+javascriptGenerator.forBlock['physio_get_accel'] = function () {
+  if (typeof globalThis?.getSensorValueByCode === 'function') {
+    // code 35, channels 0..2
+    return [
+      '[getSensorValueByCode(35,0), getSensorValueByCode(35,1), getSensorValueByCode(35,2)]',
+      javascriptGenerator.ORDER_ATOMIC
+    ];
+  }
+  return [
+    `[getSensorValue(${SENSOR_ID.ACCEL_X}), getSensorValue(${SENSOR_ID.ACCEL_Y}), getSensorValue(${SENSOR_ID.ACCEL_Z})]`,
+    javascriptGenerator.ORDER_ATOMIC
+  ];
+};
 
-  // Accelerometer (код 35): 3 канала X/Y/Z
-  { id: SENSOR_ID.ACCEL_X,      code: 35, name: 'physio_get_accel_x',    label: 'acceleration X (m/s²)',  unit: 'm/s²' },
-  { id: SENSOR_ID.ACCEL_Y,      code: 35, name: 'physio_get_accel_y',    label: 'acceleration Y (m/s²)',  unit: 'm/s²' },
-  { id: SENSOR_ID.ACCEL_Z,      code: 35, name: 'physio_get_accel_z',    label: 'acceleration Z (m/s²)',  unit: 'm/s²' },
+// external input 1 (V)
+Blockly.Blocks['physio_get_external1'] = {
+  init: function () {
+    this.jsonInit({
+      type: 'physio_get_external1',
+      message0: 'external input 1 (V)',
+      output: 'Number',
+      colour: 210,
+      tooltip: 'Get external input 1 (V)',
+      helpUrl: ''
+    });
+  }
+};
+javascriptGenerator.forBlock['physio_get_external1'] = function () {
+  if (typeof globalThis?.getSensorValueByCode === 'function') {
+    return ['getSensorValueByCode(32)', javascriptGenerator.ORDER_ATOMIC];
+  }
+  return [`getSensorValue(${SENSOR_ID.EXTERNAL1_V})`, javascriptGenerator.ORDER_ATOMIC];
+};
 
-  // Внешние универсальные входы Physio: 32 и 39
-  { id: SENSOR_ID.EXTERNAL1_V,  code: 32, name: 'physio_get_external1',  label: 'external input 1 (V)',   unit: 'V'    },
-  { id: SENSOR_ID.EXTERNAL2_V,  code: 39, name: 'physio_get_external2',  label: 'external input 2 (V)',   unit: 'V'    },
+// external input 2 (V)
+Blockly.Blocks['physio_get_external2'] = {
+  init: function () {
+    this.jsonInit({
+      type: 'physio_get_external2',
+      message0: 'external input 2 (V)',
+      output: 'Number',
+      colour: 210,
+      tooltip: 'Get external input 2 (V)',
+      helpUrl: ''
+    });
+  }
+};
+javascriptGenerator.forBlock['physio_get_external2'] = function () {
+  if (typeof globalThis?.getSensorValueByCode === 'function') {
+    return ['getSensorValueByCode(39)', javascriptGenerator.ORDER_ATOMIC];
+  }
+  return [`getSensorValue(${SENSOR_ID.EXTERNAL2_V})`, javascriptGenerator.ORDER_ATOMIC];
+};
+
+export default [
+  'physio_get_low_voltage',
+  'physio_get_accel',
+  'physio_get_external1',
+  'physio_get_external2',
 ];
-
-for (const sensor of sensors) {
-  Blockly.Blocks[sensor.name] = {
-    init: function () {
-      this.jsonInit({
-        type: sensor.name,
-        message0: sensor.label,
-        output: 'Number',
-        colour: 210,
-        tooltip: `Get ${sensor.label}`,
-        helpUrl: ''
-      });
-    }
-  };
-
-  javascriptGenerator.forBlock[sensor.name] = function () {
-    const ch = channelFor(sensor.name);
-    if (typeof globalThis?.getSensorValueByCode === 'function') {
-      return [
-        ch == null
-          ? `getSensorValueByCode(${sensor.code})`
-          : `getSensorValueByCode(${sensor.code}, ${ch})`,
-        javascriptGenerator.ORDER_ATOMIC
-      ];
-    }
-    return [`getSensorValue(${sensor.id})`, javascriptGenerator.ORDER_ATOMIC];
-  };
-}
-
-export default sensors;
-
 
 /*
 const sensors = [
