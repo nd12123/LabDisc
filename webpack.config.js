@@ -17,16 +17,16 @@ export default {
   },
   module: {
     rules: [
-      
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
-        },
-        
+        }
+      },
+      {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -51,6 +51,6 @@ export default {
       '@generators': path.resolve(__dirname, 'src/generators/'),
       '@styles': path.resolve(__dirname, 'src/styles/')
     },
-    extensions: ['.js', '.json'],
+    extensions: ['.js', '.jsx', '.json'],
   },
 };

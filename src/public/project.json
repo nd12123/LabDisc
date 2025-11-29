@@ -1,0 +1,208 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "display_text",
+        "id": "block_1",
+        "x": 0,
+        "y": 0,
+        "fields": {
+          "TEXT": "🌡️ Temperature Sensor Demo",
+          "COLOR": "#ffffff",
+          "BG": "#e74c3c",
+          "POSITION": "top"
+        },
+        "next": {
+          "block": {
+            "type": "pause",
+            "id": "block_2",
+            "inputs": {
+              "INPUT": {
+                "block": {
+                  "type": "math_number",
+                  "id": "block_2_input",
+                  "fields": {
+                    "NUM": 1000
+                  }
+                }
+              }
+            },
+            "next": {
+              "block": {
+                "type": "display_var",
+                "id": "block_3",
+                "fields": {
+                  "COLOR": "#2980b9",
+                  "BG": "#ecf0f1",
+                  "POSITION": "center"
+                },
+                "inputs": {
+                  "var": {
+                    "block": {
+                      "type": "variables_get",
+                      "id": "block_3_var",
+                      "fields": {
+                        "VAR": {
+                          "id": "@1Y_GyK_4TQh8$j`r(*["
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "pause",
+                    "id": "block_4",
+                    "inputs": {
+                      "INPUT": {
+                        "block": {
+                          "type": "math_number",
+                          "id": "block_4_input",
+                          "fields": {
+                            "NUM": 800
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "display_text",
+                        "id": "block_5",
+                        "fields": {
+                          "TEXT": "✨ Temperature Rises",
+                          "COLOR": "#999999",
+                          "BG": "#ffcc99",
+                          "POSITION": "top"
+                        },
+                        "next": {
+                          "block": {
+                            "type": "pause",
+                            "id": "block_6",
+                            "inputs": {
+                              "INPUT": {
+                                "block": {
+                                  "type": "math_number",
+                                  "id": "block_6_input",
+                                  "fields": {
+                                    "NUM": 600
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "horizontal_bar",
+                                "id": "block_7",
+                                "fields": {
+                                  "SENSOR_ID": "1",
+                                  "MIN": 0,
+                                  "MAX": 50,
+                                  "COLOR1": "#f1c40f",
+                                  "COLOR2": "#e74c3c",
+                                  "STEPS": 12
+                                },
+                                "next": {
+                                  "block": {
+                                    "type": "pause",
+                                    "id": "block_8",
+                                    "inputs": {
+                                      "INPUT": {
+                                        "block": {
+                                          "type": "math_number",
+                                          "id": "block_8_input",
+                                          "fields": {
+                                            "NUM": 1000
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "next": {
+                                      "block": {
+                                        "type": "display_var",
+                                        "id": "block_9",
+                                        "fields": {
+                                          "COLOR": "#e67e22",
+                                          "BG": "#fef5e7",
+                                          "POSITION": "center"
+                                        },
+                                        "inputs": {
+                                          "var": {
+                                            "block": {
+                                              "type": "math_number",
+                                              "id": "block_9_var",
+                                              "fields": {
+                                                "NUM": 42.7
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "next": {
+                                          "block": {
+                                            "type": "pause",
+                                            "id": "block_10",
+                                            "inputs": {
+                                              "INPUT": {
+                                                "block": {
+                                                  "type": "math_number",
+                                                  "id": "block_10_input",
+                                                  "fields": {
+                                                    "NUM": 800
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "next": {
+                                              "block": {
+                                                "type": "display_text",
+                                                "id": "block_11",
+                                                "fields": {
+                                                  "TEXT": "✅ Demo Complete!",
+                                                  "COLOR": "#27ae60",
+                                                  "BG": "#f5f5f5",
+                                                  "POSITION": "bottom"
+                                                },
+                                                "next": {
+                                                  "block": {
+                                                    "type": "beep",
+                                                    "id": "block_12",
+                                                    "fields": {
+                                                      "VOLUME": 0.7,
+                                                      "DURATION": 500
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "temperature",
+      "id": "var_temp"
+    },
+    {
+      "name": "i",
+      "id": "@1Y_GyK_4TQh8$j`r(*["
+    }
+  ]
+}

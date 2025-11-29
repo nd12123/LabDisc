@@ -1,0 +1,75 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "physio_loop",
+        "x": 50,
+        "y": 50,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "physio_title",
+              "fields": {
+                "TEXT": "🏥 Physio Model - Live Sensor Demo",
+                "COLOR": "#ffffff",
+                "BG": "#c0392b",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "physio_pause1",
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "physio_pause1_num",
+                        "fields": {
+                          "NUM": 800
+                        }
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "display_sensor",
+                      "id": "physio_hr_display",
+                      "fields": {
+                        "SENSOR_ID": "111",
+                        "UNIT": "bpm",
+                        "COLOR": "#e74c3c",
+                        "BG": "#fadbd8",
+                        "POSITION": "center"
+                      },
+                      "next": {
+                        "block": {
+                          "type": "pause",
+                          "id": "physio_pause2",
+                          "inputs": {
+                            "INPUT": {
+                              "block": {
+                                "type": "math_number",
+                                "id": "physio_pause2_num",
+                                "fields": {
+                                  "NUM": 800
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": []
+}

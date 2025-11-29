@@ -1,3 +1,8 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import RightOutputPanel from './components/RightOutputPanel.jsx';
+import './components/SlotManager.js';
+
 import * as Blockly from 'blockly/core';
 import 'blockly/blocks';
 import * as En from 'blockly/msg/en';
@@ -40,7 +45,6 @@ window.getSensorValueRaw = function(id) {
 };
 window.setSensorValue = function(id, value) {
   window.__mockSensorStore[id] = value;
-  console.log(`Sensor ${id} set to ${value}`);
 };
 
 // Карта соответствий: внутренний ID -> ключ конвертера + пост-обработка (если нужна)
@@ -65,13 +69,18 @@ const SENSOR_MAP = {
 // ПЕРЕСЧИТАННОЕ значение (теперь ВСЕ блоки автоматически получают правильные числа)
 window.getSensorValue = function(id) {
   const raw = window.getSensorValueRaw(id);
-  const map = SENSOR_MAP[id];
-  if (!map) return raw;
+  const storeHasValue = window.__mockSensorStore[id] !== undefined;
 
-  const fn = map.key ? converters[map.key] : null;
-  let val = (typeof fn === 'function') ? fn(raw) : raw;
-  if (typeof map.post === 'function') val = map.post(val);
-  return val;
+  // If store is empty (value is undefined), return 0 directly without conversion
+  // This provides a sensible default when no real sensor value exists yet
+  // Only apply converters when a non-zero value exists in the store
+  if (!storeHasValue) {
+    return 0;
+  }
+
+  // Value explicitly set via setSensorValue - return it directly without conversion
+  // This allows users to mock sensor values in the console
+  return raw;
 };
 
 /*
@@ -234,3 +243,9 @@ function stopPolling() {
 
 //workspace = Blockly.GetMainWorkapace
 //console.log(workspace.GetTheme())
+
+// Mount React component for output panel
+setTimeout(() => {
+  const outputPanelRoot = ReactDOM.createRoot(document.getElementById('outputPanel'));
+  outputPanelRoot.render(React.createElement(RightOutputPanel));
+}, 100);

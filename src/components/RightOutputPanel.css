@@ -1,0 +1,38 @@
+/* RightOutputPanel - Main container for 3 display slots */
+
+.right-output-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Each output slot takes 1/3 of the height */
+.output-slot {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+  border-bottom: 1px solid #e8e8e8;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* Remove bottom border from last slot */
+.output-slot.slot-2 {
+  border-bottom: none;
+}
+
+/* Ensure child components fill the slot completely */
+.output-slot > * {
+  width: 100%;
+  height: 100%;
+}

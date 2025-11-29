@@ -1,0 +1,135 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "enviro_loop",
+        "x": 50,
+        "y": 50,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "enviro_title",
+              "fields": {
+                "TEXT": "🌍 Enviro Model - Live Sensor Demo",
+                "COLOR": "#ffffff",
+                "BG": "#27ae60",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "enviro_pause1",
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "enviro_pause1_num",
+                        "fields": {
+                          "NUM": 800
+                        }
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "display_sensor",
+                      "id": "enviro_uv_display",
+                      "fields": {
+                        "SENSOR_ID": "401",
+                        "UNIT": "UV Index",
+                        "COLOR": "#f39c12",
+                        "BG": "#fef5e7",
+                        "POSITION": "center"
+                      },
+                      "next": {
+                        "block": {
+                          "type": "pause",
+                          "id": "enviro_pause2",
+                          "inputs": {
+                            "INPUT": {
+                              "block": {
+                                "type": "math_number",
+                                "id": "enviro_pause2_num",
+                                "fields": {
+                                  "NUM": 800
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "display_sensor",
+                              "id": "enviro_ir_display",
+                              "fields": {
+                                "SENSOR_ID": "405",
+                                "UNIT": "°C",
+                                "COLOR": "#e74c3c",
+                                "BG": "#fadbd8",
+                                "POSITION": "center"
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "pause",
+                                  "id": "enviro_pause3",
+                                  "inputs": {
+                                    "INPUT": {
+                                      "block": {
+                                        "type": "math_number",
+                                        "id": "enviro_pause3_num",
+                                        "fields": {
+                                          "NUM": 800
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "display_sensor",
+                                      "id": "enviro_do_display",
+                                      "fields": {
+                                        "SENSOR_ID": "440",
+                                        "UNIT": "mg/L",
+                                        "COLOR": "#3498db",
+                                        "BG": "#d6eaf8",
+                                        "POSITION": "center"
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "pause",
+                                          "id": "enviro_pause4",
+                                          "inputs": {
+                                            "INPUT": {
+                                              "block": {
+                                                "type": "math_number",
+                                                "id": "enviro_pause4_num",
+                                                "fields": {
+                                                  "NUM": 800
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": []
+}

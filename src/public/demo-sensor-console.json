@@ -1,0 +1,153 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "demo_forever_loop",
+        "x": 50,
+        "y": 50,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "demo_title",
+              "fields": {
+                "TEXT": "📊 Live Sensor Console Demo - Use console to change values!",
+                "COLOR": "#ffffff",
+                "BG": "#2c3e50",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "demo_pause1",
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "demo_pause1_num",
+                        "fields": {
+                          "NUM": 600
+                        }
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "display_var",
+                      "id": "demo_temp_display",
+                      "fields": {
+                        "COLOR": "#e74c3c",
+                        "BG": "#fadbd8",
+                        "POSITION": "center"
+                      },
+                      "inputs": {
+                        "var": {
+                          "block": {
+                            "type": "get_ambient_temperature",
+                            "id": "demo_temp_sensor"
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "pause",
+                          "id": "demo_pause2",
+                          "inputs": {
+                            "INPUT": {
+                              "block": {
+                                "type": "math_number",
+                                "id": "demo_pause2_num",
+                                "fields": {
+                                  "NUM": 600
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "display_var",
+                              "id": "demo_light_display",
+                              "fields": {
+                                "COLOR": "#f39c12",
+                                "BG": "#fef5e7",
+                                "POSITION": "center"
+                              },
+                              "inputs": {
+                                "var": {
+                                  "block": {
+                                    "type": "get_light",
+                                    "id": "demo_light_sensor"
+                                  }
+                                }
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "pause",
+                                  "id": "demo_pause3",
+                                  "inputs": {
+                                    "INPUT": {
+                                      "block": {
+                                        "type": "math_number",
+                                        "id": "demo_pause3_num",
+                                        "fields": {
+                                          "NUM": 600
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "display_var",
+                                      "id": "demo_humidity_display",
+                                      "fields": {
+                                        "COLOR": "#3498db",
+                                        "BG": "#d6eaf8",
+                                        "POSITION": "center"
+                                      },
+                                      "inputs": {
+                                        "var": {
+                                          "block": {
+                                            "type": "get_humidity",
+                                            "id": "demo_humidity_sensor"
+                                          }
+                                        }
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "pause",
+                                          "id": "demo_pause4",
+                                          "inputs": {
+                                            "INPUT": {
+                                              "block": {
+                                                "type": "math_number",
+                                                "id": "demo_pause4_num",
+                                                "fields": {
+                                                  "NUM": 600
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": []
+}

@@ -1,0 +1,150 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "X=vIN){Lsb?.[{0|2-g_",
+        "x": 30,
+        "y": 32,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "block_1",
+              "fields": {
+                "TEXT": "🌡️ Temperature Sensor Demo",
+                "COLOR": "#ffffff",
+                "BG": "#e74c3c",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "block_2",
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "block_2_input",
+                        "fields": {
+                          "NUM": 1000
+                        }
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "variables_set",
+                      "id": "c%G~K}@ZjlW3ESJ}6Hw.",
+                      "fields": {
+                        "VAR": {
+                          "id": "@1Y_GyK_4TQh8$j`r(*["
+                        }
+                      },
+                      "inputs": {
+                        "VALUE": {
+                          "block": {
+                            "type": "get_temperature",
+                            "id": ",,m3]c6(AAK$+X[Cqa!^"
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "display_var",
+                          "id": "block_3",
+                          "fields": {
+                            "COLOR": "#2980b9",
+                            "BG": "#ecf0f1",
+                            "POSITION": "center"
+                          },
+                          "inputs": {
+                            "var": {
+                              "block": {
+                                "type": "variables_get",
+                                "id": "block_3_var",
+                                "fields": {
+                                  "VAR": {
+                                    "id": "@1Y_GyK_4TQh8$j`r(*["
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "pause",
+                              "id": "block_4",
+                              "inputs": {
+                                "INPUT": {
+                                  "block": {
+                                    "type": "math_number",
+                                    "id": "block_4_input",
+                                    "fields": {
+                                      "NUM": 800
+                                    }
+                                  }
+                                }
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "display_var",
+                                  "id": "block_9",
+                                  "fields": {
+                                    "COLOR": "#e67e22",
+                                    "BG": "#fef5e7",
+                                    "POSITION": "center"
+                                  },
+                                  "inputs": {
+                                    "var": {
+                                      "block": {
+                                        "type": "get_temperature",
+                                        "id": "}6=.24;P{v%2)|8noO~@"
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "pause",
+                                      "id": "#y5^|$ElH|j#x6!6Nx]u",
+                                      "inputs": {
+                                        "INPUT": {
+                                          "block": {
+                                            "type": "math_number",
+                                            "id": "{QvbVzrH?ul;,PRIqiHm",
+                                            "fields": {
+                                              "NUM": 1000
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "temperature",
+      "id": "var_temp"
+    },
+    {
+      "name": "i",
+      "id": "@1Y_GyK_4TQh8$j`r(*["
+    }
+  ]
+}

@@ -81,7 +81,7 @@ Blockly.Blocks['display_text'] = {
         }
       ],
       "fields": {
-        "COLOR": '#569FA8',//"#649FEF",
+        "COLOR": "#000000",
         "BG": "#ffffff",
         "POSITION": "center"
       },
@@ -154,7 +154,7 @@ Blockly.Blocks['display_sensor'] = {
   init: function () {
     this.jsonInit({
       "type": "display_sensor",
-      "message0": "show sensor %1 with unit %2 color %3 bg %4 at %5",
+      "message0": "show sensor %1 color %2 bg %3 at %4",
       "args0": [
         {
           "type": "field_dropdown",
@@ -162,13 +162,46 @@ Blockly.Blocks['display_sensor'] = {
           "options": [
             ["Temperature", "1"],
             ["Light", "2"],
-            ["pH", "3"]
+            ["pH", "3"],
+            ["Current", "5"],
+            ["Voltage", "6"],
+            ["Sound Level", "9"],
+            ["Air Pressure", "11"],
+            ["External Temp", "12"],
+            ["Barometer", "14"],
+            ["Humidity", "15"],
+            ["Distance", "18"],
+            ["Turbidity", "31"],
+            ["External Input 1", "32"],
+            ["Microphone", "33"],
+            ["Dissolved O₂", "40"],
+            ["Conductivity", "41"],
+            ["Humidity (GenSci)", "205"],
+            ["GPS Lat (GenSci)", "210"],
+            ["GPS Lon (GenSci)", "211"],
+            ["GPS Speed (GenSci)", "212"],
+            ["GPS Course (GenSci)", "213"],
+            ["GPS Time (GenSci)", "214"],
+            ["Microphone (GenSci)", "233"],
+            ["Low Voltage", "316"],
+            ["External 1", "321"],
+            ["External 2", "391"],
+            ["UV Index", "401"],
+            ["Barometer (Enviro)", "403"],
+            ["IR Temp", "405"],
+            ["GPS Lat (Enviro)", "410"],
+            ["GPS Lon (Enviro)", "411"],
+            ["GPS Speed (Enviro)", "412"],
+            ["GPS Course (Enviro)", "413"],
+            ["GPS Time (Enviro)", "414"],
+            ["Color R", "420"],
+            ["Color G", "421"],
+            ["Color B", "422"],
+            ["Turbidity (Enviro)", "431"],
+            ["Dissolved O₂ (Enviro)", "440"],
+            ["Thermocouple", "110"],
+            ["Heart Rate", "111"]
           ]
-        },
-        {
-          "type": "field_input",
-          "name": "UNIT",
-          "text": "°C"
         },
         {
           "type": "field_colour",
@@ -281,7 +314,45 @@ Blockly.Blocks['horizontal_bar'] = {
           "options": [
             ["Temperature", "1"],
             ["Light", "2"],
-            ["pH", "3"]
+            ["pH", "3"],
+            ["Current", "5"],
+            ["Voltage", "6"],
+            ["Sound Level", "9"],
+            ["Air Pressure", "11"],
+            ["External Temp", "12"],
+            ["Barometer", "14"],
+            ["Humidity", "15"],
+            ["Distance", "18"],
+            ["Turbidity", "31"],
+            ["External Input 1", "32"],
+            ["Microphone", "33"],
+            ["Dissolved O₂", "40"],
+            ["Conductivity", "41"],
+            ["Humidity (GenSci)", "205"],
+            ["GPS Lat (GenSci)", "210"],
+            ["GPS Lon (GenSci)", "211"],
+            ["GPS Speed (GenSci)", "212"],
+            ["GPS Course (GenSci)", "213"],
+            ["GPS Time (GenSci)", "214"],
+            ["Microphone (GenSci)", "233"],
+            ["Low Voltage", "316"],
+            ["External 1", "321"],
+            ["External 2", "391"],
+            ["UV Index", "401"],
+            ["Barometer (Enviro)", "403"],
+            ["IR Temp", "405"],
+            ["GPS Lat (Enviro)", "410"],
+            ["GPS Lon (Enviro)", "411"],
+            ["GPS Speed (Enviro)", "412"],
+            ["GPS Course (Enviro)", "413"],
+            ["GPS Time (Enviro)", "414"],
+            ["Color R", "420"],
+            ["Color G", "421"],
+            ["Color B", "422"],
+            ["Turbidity (Enviro)", "431"],
+            ["Dissolved O₂ (Enviro)", "440"],
+            ["Thermocouple", "110"],
+            ["Heart Rate", "111"]
           ]
         },
         {

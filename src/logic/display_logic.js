@@ -1,176 +1,133 @@
 // src/logic/display.js
 
 /**
- * Глобальные функции отрисовки для категории "Display"
- * Предполагается, что есть canvas с id="displayCanvas" в DOM
+ * New display system using React component
+ * All display functions update the RightOutputPanel through window.updateDisplaySlot
  */
 
-function getDisplayCanvas() {
-    let canvas = document.getElementById('displayCanvas');
-    if (!canvas) {
-      canvas = document.createElement('canvas');
-      canvas.id = 'displayCanvas';
-      canvas.width = 620;
-      canvas.height = 240;
-      canvas.style.border = '1px solid #aaa';
-      canvas.style.margin = '10px';
-      document.body.appendChild(canvas);
-    }
-    return canvas;
+// Ensure slot manager is available (imported in index.js before this file)
+
+// Helper: Get slot for a block and update the panel
+function updateSlot(blockId, displayData) {
+  if (!window.slotManager) {
+    console.error('SlotManager not initialized');
+    return;
   }
-  
-  function getDisplayContext() {
-    const canvas = getDisplayCanvas();
-    return canvas.getContext('2d');
+
+  const slotIndex = window.slotManager.getSlot(blockId);
+  window.slotManager.setSlotContent(slotIndex, displayData);
+
+  if (typeof window.updateDisplaySlot === 'function') {
+    window.updateDisplaySlot(slotIndex, displayData);
   }
-  
-  // Очистка дисплея
-  window.clearScreen = function () {
-    const ctx = getDisplayContext();
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  };
-  
-  // Отображение текста
-  window.displayText = function (text, textColor, bgColor, line = 0) {
+}
 
-//console.log("display: ", text, textColor, bgColor, line);
-    //const y = lineHeight * line + 16;
-    const ctx = getDisplayContext();
-  const canvas = ctx.canvas;
-  const lineHeight = 28;
-  const y = 16;
-  const padding = 4;
-
-  // рисуем фон чуть выше и чуть выше строки текста
-  ctx.fillStyle = bgColor || '#F8F8F8';
-  ctx.fillRect(0, lineHeight * line, canvas.width, lineHeight);
-
-  // рисуем текст
-  ctx.fillStyle = textColor || '#000000';
-  ctx.font = '16px Outfit, sans-serif';
-  ctx.fillText(String(text), padding, y);
-  };
+// Очистка дисплея - clears all slots
+window.clearScreen = function () {
+  if (window.slotManager) {
+    window.slotManager.reset();
+  }
+  if (typeof window.clearOutputPanel === 'function') {
+    window.clearOutputPanel();
+  }
+};
   
-  
- // src/logic/display_var.js
-
 /**
- * Отображает значение переменной на дисплее с цветами и позицией
- * @param {any} value — значение переменной (число, строка и т.п.)
- * @param {string} textColor — цвет текста (напр. "#000000")
- * @param {string} bgColor — цвет фона (напр. "#ffffff")
- * @param {string|number} position — строка от 0 и выше
+ * NEW API: displayText - shows text with custom colors
+ * @param {string} blockId - unique identifier for the block (used for slot allocation)
+ * @param {string} text - text to display
+ * @param {string} textColor - text color (hex color, e.g., #000000)
+ * @param {string} bgColor - background color
+ * @param {string} position - vertical alignment: 'top', 'center', or 'bottom'
  */
-window.displayVariable = function(value, textColor, bgColor, position) {
-    const ctx = getDisplayContext();
-    const canvas = ctx.canvas;
-    const lineHeight = 28;
-    const line = Number(position) || 0;
-    const y = lineHeight * line + 20;
-    const padding = 4;
-  
-    ctx.fillStyle = bgColor || '#FFFFFF';
-    ctx.fillRect(0, lineHeight * line, canvas.width, lineHeight);
-  
-    ctx.fillStyle = textColor || '#000000';
-    ctx.font = 'bold 16px monospace';
-    ctx.fillText(String(value), padding, y);
+window.displayText = function (blockId, text, textColor, bgColor, position) {
+  const displayData = {
+    type: 'text',
+    text: String(text || ''),
+    color: textColor || '#000000',
+    bgColor: bgColor || '#ffffff',
+    position: position || 'center'
   };
-
-// src/logic/draw_bar.js
+  updateSlot(blockId, displayData);
+};
 
 /**
- * Отрисовывает полоску, поделенную на цветовые сегменты (градиент по шагам)
- * @param {string} color1 — стартовый цвет
- * @param {string} color2 — конечный цвет
- * @param {number} steps — число делений
+ * NEW API: displayVariable - shows numeric value as meter display
+ * Supports live sensor polling for dynamic updates
+ * @param {string} blockId - unique identifier for the block
+ * @param {number} value - numeric value to display (ignored if sensorId provided)
+ * @param {string} label - label/title for the meter
+ * @param {string} unit - unit of measurement
+ * @param {string} textColor - color for the value text
+ * @param {string} bgColor - background color
+ * @param {string} position - vertical alignment: 'top', 'center', or 'bottom'
+ * @param {string} sensorId - sensor ID for live polling (optional, if provided, value is ignored)
+ */
+window.displayVariable = function(blockId, value, label, unit, textColor, bgColor, position, sensorId) {
+  const displayData = {
+    type: 'meter',
+    label: String(label || 'Value'),
+    value: Number(value) || 0,
+    unit: String(unit || ''),
+    color: textColor || '#0000ff',
+    bgColor: bgColor || '#ffffff',
+    position: position || 'center',
+    sensorId: sensorId // Store sensor ID for live polling
+  };
+  updateSlot(blockId, displayData);
+};
+
+/**
+ * NEW API: displayBar - shows horizontal color bar with gradient
+ * Supports live sensor polling for dynamic updates
+ * @param {string} blockId - unique identifier for the block
+ * @param {number} low - minimum range value
+ * @param {number} high - maximum range value
+ * @param {number} value - current sensor value (can be a sensor ID string for live polling)
+ * @param {string} color1 - start color (hex)
+ * @param {string} color2 - end color (hex)
+ * @param {number} steps - number of segments
+ * @param {string} label - sensor name/label (optional)
+ * @param {string} unit - unit of measurement (optional)
+ * @param {string} sensorId - sensor ID for live polling (optional, if provided, value is ignored)
+ */
+window.displayBar = function(blockId, low, high, value, color1, color2, steps, label, unit, sensorId) {
+  const displayData = {
+    type: 'bar',
+    low: Number(low) || 0,
+    high: Number(high) || 100,
+    value: Number(value) || 0,
+    color1: color1 || '#00ff00',
+    color2: color2 || '#ff0000',
+    steps: Number(steps) || 10,
+    label: label || '',
+    unit: unit || '',
+    sensorId: sensorId // Store sensor ID for live polling
+  };
+  updateSlot(blockId, displayData);
+};
+
+/**
+ * DEPRECATED: Old canvas-based bar function (kept for backward compatibility)
+ * Use displayBar() instead for new code
  */
 window.drawBar = function(color1, color2, steps) {
-    const x = 20;
-    const y = 50;
-    const width = 300;
-    const height = 50;
-    const ctx = getDisplayContext();
-  
-    // Очистить зону
-    ctx.clearRect(x, y, width, height);
-  
-    // Разбиваем градиент на шаги
-    const stepWidth = width / steps;
-  
-    for (let i = 0; i < steps; i++) {
-      const t = i / (steps - 1);
-      const r = Math.round(
-        (1 - t) * parseInt(color1.slice(1, 3), 16) +
-        t * parseInt(color2.slice(1, 3), 16)
-      );
-      const g = Math.round(
-        (1 - t) * parseInt(color1.slice(3, 5), 16) +
-        t * parseInt(color2.slice(3, 5), 16)
-      );
-      const b = Math.round(
-        (1 - t) * parseInt(color1.slice(5, 7), 16) +
-        t * parseInt(color2.slice(5, 7), 16)
-      );
-  
-      const color = `rgb(${r}, ${g}, ${b})`;
-      ctx.fillStyle = color;
-      ctx.fillRect(x + i * stepWidth, y, stepWidth + 1, height); // +1 для устранения разрывов
-    }
-  };
-  
-  // src/logic/draw_bar.js
+  console.warn('drawBar() is deprecated. Use displayBar(blockId, low, high, value, color1, color2, steps) instead.');
+};
 
 /**
- * Отрисовывает полоску с градиентными сегментами и отмечает текущий диапазон сенсора
- * @param {string} color1 — стартовый цвет
- * @param {string} color2 — конечный цвет
- * @param {number} steps — число сегментов
- * @param {number} min — минимальное значение сенсора
- * @param {number} max — максимальное значение сенсора
+ * DEPRECATED: Old canvas-based horizontal bar (kept for backward compatibility)
+ * Use displayBar() instead for new code
  */
 window.drawHorBar = function(sensorId, min, max, color1, color2, steps) {
-    const x = 20;
-    const y = 50;
-    const width = 300;
-    const height = 50;
-    const ctx = getDisplayContext();
-  
-    // Очистить зону
-    ctx.clearRect(x, y, width, height);
-  
-    // Получить значение
+  console.warn('drawHorBar() is deprecated. Use displayBar(blockId, low, high, value, color1, color2, steps) instead.');
+
+  // Fallback: try to get sensor value and display
+  if (typeof getSensorValue === 'function') {
     const value = getSensorValue(sensorId);
-    const ratio = Math.max(0, Math.min(1, (value - min) / (max - min)));
-    const activeStep = Math.floor(ratio * steps);
-  
-    // Разбиваем градиент на шаги
-    const stepWidth = width / steps;
-  
-    for (let i = 0; i < steps; i++) {
-      let fillColor;
-      if (i > activeStep) {
-        fillColor = '#DDDDDD';
-      } else {
-        const t = i / (steps - 1);
-        const r = Math.round(
-          (1 - t) * parseInt(color1.slice(1, 3), 16) +
-          t * parseInt(color2.slice(1, 3), 16)
-        );
-        const g = Math.round(
-          (1 - t) * parseInt(color1.slice(3, 5), 16) +
-          t * parseInt(color2.slice(3, 5), 16)
-        );
-        const b = Math.round(
-          (1 - t) * parseInt(color1.slice(5, 7), 16) +
-          t * parseInt(color2.slice(5, 7), 16)
-        );
-        fillColor = `rgb(${r}, ${g}, ${b})`;
-      }
-      ctx.fillStyle = fillColor;
-      ctx.fillRect(x + i * stepWidth, y, stepWidth + 1, height);
-    }
-  };
+    window.displayBar(`bar_${sensorId}`, min, max, value, color1, color2, steps);
+  }
+};
   
   
   /*
