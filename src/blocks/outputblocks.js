@@ -259,7 +259,7 @@ Blockly.Blocks['display_sensor'] = {
       "previousStatement": null,
       "nextStatement": null,
       "colour": "#569FA8",//90,
-      "tooltip": "Show the current sensor value on screen",
+      "tooltip": "Display the current value from a selected sensor on the screen. Use SENSOR_ID field (not SENSOR) in JSON.",
       "helpUrl": ""
     });
   }
@@ -425,7 +425,7 @@ Blockly.Blocks['horizontal_bar'] = {
       "previousStatement": null,
       "nextStatement": null,
       "colour": "#569FA8",//120,
-      "tooltip": "Display sensor value as a color-shifting bar",
+      "tooltip": "Display sensor value as a color-shifting bar. Use SENSOR_ID field (not SENSOR) in JSON.",
       "helpUrl": ""
     });
   }

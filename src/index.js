@@ -7,6 +7,18 @@ import * as Blockly from 'blockly/core';
 import 'blockly/blocks';
 import * as En from 'blockly/msg/en';
 
+// Suppress Blockly v12 deprecation warnings for methods that will be fixed in v13
+// These warnings come from Blockly's internal serialization code, not our code
+const originalWarn = console.warn;
+console.warn = function(...args) {
+  const message = args[0]?.toString() || '';
+  // Suppress specific Blockly deprecation warnings
+  if (message.includes('getAllVariables') || message.includes('getVariableById')) {
+    return; // Silently skip these warnings
+  }
+  originalWarn.apply(console, args);
+};
+
 import { javascriptGenerator} from 'blockly/javascript';
 import './styles/toolbox_style.css';
 import { MyOwnDarkTheme } from './themes/blockly_theme.js';
