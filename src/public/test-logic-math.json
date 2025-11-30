@@ -1,0 +1,147 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "test_loop",
+        "x": 50,
+        "y": 50,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "test_title",
+              "fields": {
+                "TEXT": "🧪 Testing Logic & Math",
+                "COLOR": "#ffffff",
+                "BG": "#2c3e50",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "pause0",
+                  "inputs": {"INPUT": {"block": {"type": "math_number", "id": "p0", "fields": {"NUM": 600}}}},
+                  "next": {
+                    "block": {
+                      "type": "controls_if",
+                      "id": "if_block",
+                      "inputs": {
+                        "IF0": {
+                          "block": {
+                            "type": "logic_compare",
+                            "id": "compare1",
+                            "fields": {"OP": "GT"},
+                            "inputs": {
+                              "A": {
+                                "block": {
+                                  "type": "math_arithmetic",
+                                  "id": "math_add",
+                                  "fields": {"OP": "ADD"},
+                                  "inputs": {
+                                    "A": {"block": {"type": "math_number", "id": "num1", "fields": {"NUM": 5}}},
+                                    "B": {"block": {"type": "math_number", "id": "num2", "fields": {"NUM": 3}}}
+                                  }
+                                }
+                              },
+                              "B": {"block": {"type": "math_number", "id": "num3", "fields": {"NUM": 7}}}
+                            }
+                          }
+                        },
+                        "DO0": {
+                          "block": {
+                            "type": "display_text",
+                            "id": "if_true",
+                            "fields": {
+                              "TEXT": "5+3 > 7: TRUE ✓",
+                              "COLOR": "#27ae60",
+                              "BG": "#d5f4e6",
+                              "POSITION": "center"
+                            },
+                            "next": {
+                              "block": {
+                                "type": "pause",
+                                "id": "pause_if",
+                                "inputs": {"INPUT": {"block": {"type": "math_number", "id": "p_if", "fields": {"NUM": 800}}}}
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "display_var",
+                          "id": "test_sqrt",
+                          "fields": {"COLOR": "#e67e22", "BG": "#fdebd0", "POSITION": "center"},
+                          "inputs": {
+                            "var": {
+                              "block": {
+                                "type": "math_single",
+                                "id": "sqrt_block",
+                                "fields": {"OP": "ROOT"},
+                                "inputs": {
+                                  "NUM": {"block": {"type": "math_number", "id": "sqrt_input", "fields": {"NUM": 16}}}
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "pause",
+                              "id": "pause_sqrt",
+                              "inputs": {"INPUT": {"block": {"type": "math_number", "id": "p_sqrt", "fields": {"NUM": 800}}}},
+                              "next": {
+                                "block": {
+                                  "type": "display_var",
+                                  "id": "test_round",
+                                  "fields": {"COLOR": "#c0392b", "BG": "#fadbd8", "POSITION": "center"},
+                                  "inputs": {
+                                    "var": {
+                                      "block": {
+                                        "type": "math_round",
+                                        "id": "round_block",
+                                        "fields": {"OP": "ROUND"},
+                                        "inputs": {
+                                          "NUM": {"block": {"type": "math_number", "id": "round_input", "fields": {"NUM": 3.7}}}
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "display_var",
+                                      "id": "test_abs",
+                                      "fields": {"COLOR": "#8e44ad", "BG": "#ebdef0", "POSITION": "center"},
+                                      "inputs": {
+                                        "var": {
+                                          "block": {
+                                            "type": "math_single",
+                                            "id": "abs_block",
+                                            "fields": {"OP": "ABS"},
+                                            "inputs": {
+                                              "NUM": {"block": {"type": "math_number", "id": "abs_input", "fields": {"NUM": -42}}}
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": []
+}

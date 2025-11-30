@@ -1,0 +1,122 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "test_loop",
+        "x": 50,
+        "y": 50,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "test_text",
+              "fields": {
+                "TEXT": "🧪 Testing Common Input Blocks",
+                "COLOR": "#ffffff",
+                "BG": "#2c3e50",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "pause1",
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "pause1_num",
+                        "fields": {"NUM": 500}
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "display_var",
+                      "id": "test_amb_temp",
+                      "fields": {
+                        "COLOR": "#e74c3c",
+                        "BG": "#fadbd8",
+                        "POSITION": "center"
+                      },
+                      "inputs": {
+                        "var": {
+                          "block": {"type": "get_ambient_temperature", "id": "sensor_amb_temp"}
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "pause",
+                          "id": "pause2",
+                          "inputs": {
+                            "INPUT": {"block": {"type": "math_number", "id": "pause2_num", "fields": {"NUM": 500}}}
+                          },
+                          "next": {
+                            "block": {
+                              "type": "display_var",
+                              "id": "test_light",
+                              "fields": {"COLOR": "#f39c12", "BG": "#fef5e7", "POSITION": "center"},
+                              "inputs": {
+                                "var": {"block": {"type": "get_light", "id": "sensor_light"}}
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "pause",
+                                  "id": "pause3",
+                                  "inputs": {"INPUT": {"block": {"type": "math_number", "id": "pause3_num", "fields": {"NUM": 500}}}},
+                                  "next": {
+                                    "block": {
+                                      "type": "display_var",
+                                      "id": "test_humidity",
+                                      "fields": {"COLOR": "#3498db", "BG": "#d6eaf8", "POSITION": "center"},
+                                      "inputs": {
+                                        "var": {"block": {"type": "get_humidity", "id": "sensor_humidity"}}
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "pause",
+                                          "id": "pause4",
+                                          "inputs": {"INPUT": {"block": {"type": "math_number", "id": "pause4_num", "fields": {"NUM": 500}}}},
+                                          "next": {
+                                            "block": {
+                                              "type": "display_var",
+                                              "id": "test_distance",
+                                              "fields": {"COLOR": "#9b59b6", "BG": "#ebdef0", "POSITION": "center"},
+                                              "inputs": {
+                                                "var": {"block": {"type": "get_distance", "id": "sensor_distance"}}
+                                              },
+                                              "next": {
+                                                "block": {
+                                                  "type": "display_var",
+                                                  "id": "test_sound",
+                                                  "fields": {"COLOR": "#16a085", "BG": "#d5f4e6", "POSITION": "center"},
+                                                  "inputs": {
+                                                    "var": {"block": {"type": "get_sound_level", "id": "sensor_sound"}}
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": []
+}

@@ -7,6 +7,16 @@
 
 // Ensure slot manager is available (imported in index.js before this file)
 
+// Helper: Convert position string to slot index
+function positionToSlotIndex(position) {
+  switch(position) {
+    case 'top': return 0;
+    case 'center': return 1;
+    case 'bottom': return 2;
+    default: return null;
+  }
+}
+
 // Helper: Get slot for a block and update the panel
 function updateSlot(blockId, displayData) {
   if (!window.slotManager) {
@@ -14,7 +24,9 @@ function updateSlot(blockId, displayData) {
     return;
   }
 
-  const slotIndex = window.slotManager.getSlot(blockId);
+  // The position field now controls which screen to display on
+  const requestedSlot = positionToSlotIndex(displayData.position);
+  const slotIndex = window.slotManager.getSlot(blockId, requestedSlot);
   window.slotManager.setSlotContent(slotIndex, displayData);
 
   if (typeof window.updateDisplaySlot === 'function') {
@@ -31,6 +43,20 @@ window.clearScreen = function () {
     window.clearOutputPanel();
   }
 };
+
+/**
+ * Clear a specific screen/slot
+ * @param {string} screenPosition - 'top', 'center', or 'bottom'
+ */
+window.clearScreenSlot = function (screenPosition) {
+  const slotIndex = positionToSlotIndex(screenPosition);
+  if (slotIndex !== null && window.slotManager) {
+    window.slotManager.clearSlot(slotIndex);
+    if (typeof window.updateDisplaySlot === 'function') {
+      window.updateDisplaySlot(slotIndex, null);
+    }
+  }
+};
   
 /**
  * NEW API: displayText - shows text with custom colors
@@ -38,7 +64,7 @@ window.clearScreen = function () {
  * @param {string} text - text to display
  * @param {string} textColor - text color (hex color, e.g., #000000)
  * @param {string} bgColor - background color
- * @param {string} position - vertical alignment: 'top', 'center', or 'bottom'
+ * @param {string} position - which screen to display on: 'top', 'center', or 'bottom'
  */
 window.displayText = function (blockId, text, textColor, bgColor, position) {
   const displayData = {
@@ -60,7 +86,7 @@ window.displayText = function (blockId, text, textColor, bgColor, position) {
  * @param {string} unit - unit of measurement
  * @param {string} textColor - color for the value text
  * @param {string} bgColor - background color
- * @param {string} position - vertical alignment: 'top', 'center', or 'bottom'
+ * @param {string} position - which screen to display on: 'top', 'center', or 'bottom'
  * @param {string} sensorId - sensor ID for live polling (optional, if provided, value is ignored)
  */
 window.displayVariable = function(blockId, value, label, unit, textColor, bgColor, position, sensorId) {
@@ -89,9 +115,10 @@ window.displayVariable = function(blockId, value, label, unit, textColor, bgColo
  * @param {number} steps - number of segments
  * @param {string} label - sensor name/label (optional)
  * @param {string} unit - unit of measurement (optional)
+ * @param {string} position - which screen to display on: 'top', 'center', or 'bottom'
  * @param {string} sensorId - sensor ID for live polling (optional, if provided, value is ignored)
  */
-window.displayBar = function(blockId, low, high, value, color1, color2, steps, label, unit, sensorId) {
+window.displayBar = function(blockId, low, high, value, color1, color2, steps, label, unit, position, sensorId) {
   const displayData = {
     type: 'bar',
     low: Number(low) || 0,
@@ -102,6 +129,7 @@ window.displayBar = function(blockId, low, high, value, color1, color2, steps, l
     steps: Number(steps) || 10,
     label: label || '',
     unit: unit || '',
+    position: position || 'center',
     sensorId: sensorId // Store sensor ID for live polling
   };
   updateSlot(blockId, displayData);

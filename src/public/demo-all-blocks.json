@@ -1,0 +1,180 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "forever_loop_clean",
+        "id": "demo_forever_loop",
+        "x": 50,
+        "y": 50,
+        "inputs": {
+          "comands": {
+            "block": {
+              "type": "display_text",
+              "id": "demo_text_top",
+              "fields": {
+                "TEXT": "🎨 Display Text - Top Screen",
+                "COLOR": "#ffffff",
+                "BG": "#2c3e50",
+                "POSITION": "top"
+              },
+              "next": {
+                "block": {
+                  "type": "pause",
+                  "id": "demo_pause1",
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "demo_pause1_num",
+                        "fields": {
+                          "NUM": 1000
+                        }
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "display_var",
+                      "id": "demo_var_center",
+                      "fields": {
+                        "COLOR": "#e74c3c",
+                        "BG": "#fadbd8",
+                        "POSITION": "center"
+                      },
+                      "inputs": {
+                        "var": {
+                          "block": {
+                            "type": "get_ambient_temperature",
+                            "id": "demo_temp_sensor"
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "pause",
+                          "id": "demo_pause2",
+                          "inputs": {
+                            "INPUT": {
+                              "block": {
+                                "type": "math_number",
+                                "id": "demo_pause2_num",
+                                "fields": {
+                                  "NUM": 1000
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "display_sensor",
+                              "id": "demo_sensor_bottom",
+                              "fields": {
+                                "SENSOR_ID": "2",
+                                "COLOR": "#f39c12",
+                                "BG": "#fef5e7",
+                                "POSITION": "bottom"
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "pause",
+                                  "id": "demo_pause3",
+                                  "inputs": {
+                                    "INPUT": {
+                                      "block": {
+                                        "type": "math_number",
+                                        "id": "demo_pause3_num",
+                                        "fields": {
+                                          "NUM": 1000
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "bar",
+                                      "id": "demo_bar_top",
+                                      "fields": {
+                                        "COLOR1": "#00ff00",
+                                        "COLOR2": "#ff0000",
+                                        "STEPS": 10,
+                                        "POSITION": "top"
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "pause",
+                                          "id": "demo_pause4",
+                                          "inputs": {
+                                            "INPUT": {
+                                              "block": {
+                                                "type": "math_number",
+                                                "id": "demo_pause4_num",
+                                                "fields": {
+                                                  "NUM": 1000
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "next": {
+                                            "block": {
+                                              "type": "horizontal_bar",
+                                              "id": "demo_hbar_center",
+                                              "fields": {
+                                                "SENSOR_ID": "15",
+                                                "MIN": 0,
+                                                "MAX": 100,
+                                                "COLOR1": "#3498db",
+                                                "COLOR2": "#e74c3c",
+                                                "STEPS": 8,
+                                                "POSITION": "center"
+                                              },
+                                              "next": {
+                                                "block": {
+                                                  "type": "pause",
+                                                  "id": "demo_pause5",
+                                                  "inputs": {
+                                                    "INPUT": {
+                                                      "block": {
+                                                        "type": "math_number",
+                                                        "id": "demo_pause5_num",
+                                                        "fields": {
+                                                          "NUM": 1000
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  "next": {
+                                                    "block": {
+                                                      "type": "clear_screen_slot",
+                                                      "id": "demo_clear_bottom",
+                                                      "fields": {
+                                                        "SCREEN": "bottom"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": []
+}

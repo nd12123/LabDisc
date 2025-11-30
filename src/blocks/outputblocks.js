@@ -55,7 +55,7 @@ Blockly.Blocks['display_text'] = {
   init: function () {
     this.jsonInit({
       "type": "display_text",
-      "message0": "display text %1 color %2 background %3 at %4",
+      "message0": "display text %1 color %2 background %3 on %4",
       "args0": [
         {
           "type": "field_input",
@@ -98,7 +98,7 @@ Blockly.Blocks['display_text'] = {
 Blockly.Blocks["display_var"] = {
     init: function() {
       this.jsonInit({
-        "message0": "display variable %1 color %2 background %3 at %4", //%{BKY_DISPLAY_VAR}
+        "message0": "display variable %1 color %2 background %3 on %4", //%{BKY_DISPLAY_VAR}
         "args0": [
           {
             "type": "input_value",
@@ -138,13 +138,43 @@ Blockly.Blocks["display_var"] = {
   
   Blockly.Blocks['clear_screen'] = {
     init: function() {
-      this.appendDummyInput()
-          .appendField("clear screen");//Blockly.Msg["CLEAR_SCREEN_TEXT"]);
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour("#569FA8");
-   this.setTooltip("");
-   this.setHelpUrl("");
+      this.jsonInit({
+        "type": "clear_screen",
+        "message0": "clear all screens",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#569FA8",
+        "tooltip": "Clear all display screens",
+        "helpUrl": ""
+      });
+    }
+  };
+
+  Blockly.Blocks['clear_screen_slot'] = {
+    init: function() {
+      this.jsonInit({
+        "type": "clear_screen_slot",
+        "message0": "clear screen %1",
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "SCREEN",
+            "options": [
+              ["Top", "top"],
+              ["Center", "center"],
+              ["Bottom", "bottom"]
+            ]
+          }
+        ],
+        "fields": {
+          "SCREEN": "center"
+        },
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "#569FA8",
+        "tooltip": "Clear a specific display screen",
+        "helpUrl": ""
+      });
     }
   };
 
@@ -154,7 +184,7 @@ Blockly.Blocks['display_sensor'] = {
   init: function () {
     this.jsonInit({
       "type": "display_sensor",
-      "message0": "show sensor %1 color %2 bg %3 at %4",
+      "message0": "show sensor %1 color %2 bg %3 on %4",
       "args0": [
         {
           "type": "field_dropdown",
@@ -258,20 +288,8 @@ Blockly.Blocks['bar'] = {
   init: function () {
     this.jsonInit({
       "type": "bar", //horizontal_bar?
-      "message0": "bar from color %1 to color %2 in %3 steps", //from %1 to %2
+      "message0": "bar from color %1 to color %2 in %3 steps on %4", //from %1 to %2
       "args0": [
-        /*
-        {
-          "type": "field_number",
-          "name": "MIN",
-          "value": 0
-        },
-        {
-          "type": "field_number",
-          "name": "MAX",
-          "value": 100
-        },
-        */
         {
           "type": "field_colour",
           "name": "COLOR1"
@@ -285,11 +303,21 @@ Blockly.Blocks['bar'] = {
           "name": "STEPS",
           "value": 10,
           "min": 1
+        },
+        {
+          "type": "field_dropdown",
+          "name": "POSITION",
+          "options": [
+            ["Top", "top"],
+            ["Center", "center"],
+            ["Bottom", "bottom"]
+          ]
         }
       ],
       "fields": {
         "COLOR1": "#00ff00",
-        "COLOR2": "#ff0000"
+        "COLOR2": "#ff0000",
+        "POSITION": "center"
       },
       "previousStatement": null,
       "nextStatement": null,
@@ -306,7 +334,7 @@ Blockly.Blocks['horizontal_bar'] = {
   init: function () {
     this.jsonInit({
       "type": "horizontal_bar",
-      "message0": "display bar of %1 from %2 to %3 color %4 to %5 in %6 steps",
+      "message0": "display bar of %1 from %2 to %3 color %4 to %5 in %6 steps on %7",
       "args0": [
         {
           "type": "field_dropdown",
@@ -378,11 +406,21 @@ Blockly.Blocks['horizontal_bar'] = {
           "name": "STEPS",
           "value": 10,
           "min": 1
+        },
+        {
+          "type": "field_dropdown",
+          "name": "POSITION",
+          "options": [
+            ["Top", "top"],
+            ["Center", "center"],
+            ["Bottom", "bottom"]
+          ]
         }
       ],
       "fields": {
         "COLOR1": "#00ff00",
-        "COLOR2": "#ff0000"
+        "COLOR2": "#ff0000",
+        "POSITION": "center"
       },
       "previousStatement": null,
       "nextStatement": null,

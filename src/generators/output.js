@@ -201,7 +201,7 @@ javascriptGenerator.forBlock['display_sensor'] = function(block) {
 
   const metadata = sensorMetadata[id] || { name: `Sensor ${id}`, unit: '' };
 
-  // Pass sensorId as 8th parameter for live polling
+  // Pass sensorId as parameter for live polling
   return `displayVariable("${blockId}", null, "${metadata.name}", "${metadata.unit}", "${color}", "${bg}", "${pos}", "${id}");\n`;
 };
 
@@ -210,15 +210,22 @@ javascriptGenerator.forBlock['clear_screen'] = function(block) {
   return `clearScreen();\n`;
 };
 
+// clear_screen_slot block
+javascriptGenerator.forBlock['clear_screen_slot'] = function(block) {
+  const screen = block.getFieldValue('SCREEN') || 'center';
+  return `clearScreenSlot("${screen}");\n`;
+};
+
 
 javascriptGenerator.forBlock['bar'] = function(block) {
   const color1 = block.getFieldValue('COLOR1') || '#00FF00';
   const color2 = block.getFieldValue('COLOR2') || '#0000FF';
   const steps = block.getFieldValue('STEPS') || '10';
+  const pos = block.getFieldValue('POSITION') || 'center';
   const blockId = block.id;
 
   // Basic bar without sensor integration
-  return `displayBar("${blockId}", 0, 100, 50, "${color1}", "${color2}", ${steps});\n`;
+  return `displayBar("${blockId}", 0, 100, 50, "${color1}", "${color2}", ${steps}, "", "", "${pos}");\n`;
 };
 
 javascriptGenerator.forBlock['horizontal_bar'] = function(block) {
@@ -228,6 +235,7 @@ javascriptGenerator.forBlock['horizontal_bar'] = function(block) {
   const color1 = block.getFieldValue('COLOR1') || '#00FF00';
   const color2 = block.getFieldValue('COLOR2') || '#0000FF';
   const steps = block.getFieldValue('STEPS') || '10';
+  const pos = block.getFieldValue('POSITION') || 'center';
   const blockId = block.id;
 
   // Map sensor IDs to labels and units
@@ -241,7 +249,7 @@ javascriptGenerator.forBlock['horizontal_bar'] = function(block) {
 
   // Pass sensorId as value so component can fetch it live
   // Use a special marker to indicate this should be fetched live
-  return `displayBar("${blockId}", ${min}, ${max}, null, "${color1}", "${color2}", ${steps}, "${sensorInfo.label}", "${sensorInfo.unit}", "${sensorId}");\n`;
+  return `displayBar("${blockId}", ${min}, ${max}, null, "${color1}", "${color2}", ${steps}, "${sensorInfo.label}", "${sensorInfo.unit}", "${pos}", "${sensorId}");\n`;
 };
 
 

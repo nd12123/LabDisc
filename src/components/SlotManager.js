@@ -16,36 +16,43 @@ class SlotManager {
   /**
    * Get or allocate a slot for a block
    * @param {string} blockId - Unique identifier for the block
+   * @param {number} requestedSlot - Optional: specific slot index (0-2) to place this display
    * @returns {number} - Slot index (0-2)
    */
-  getSlot(blockId) {
+  getSlot(blockId, requestedSlot = null) {
     // If already allocated, return existing slot
     if (this.slots.hasOwnProperty(blockId)) {
       return this.slots[blockId];
     }
 
-    // Find first free slot (check which slots are occupied)
-    const occupiedSlots = new Set(Object.values(this.slots));
     let slotIndex = -1;
 
-    for (let i = 0; i < 3; i++) {
-      if (!occupiedSlots.has(i)) {
-        slotIndex = i;
-        break;
-      }
-    }
+    // If a specific slot is requested, use that
+    if (requestedSlot !== null && requestedSlot >= 0 && requestedSlot < 3) {
+      slotIndex = requestedSlot;
+    } else {
+      // Find first free slot (check which slots are occupied)
+      const occupiedSlots = new Set(Object.values(this.slots));
 
-    // If no free slots, find the oldest block and evict it
-    if (slotIndex === -1) {
-      // Remove the first (oldest) block from slots
-      const oldestBlockId = this.order[0];
-      if (oldestBlockId) {
-        slotIndex = this.slots[oldestBlockId];
-        delete this.slots[oldestBlockId];
-        this.order.shift();
-        console.warn(`Slot ${slotIndex} evicted block ${oldestBlockId} to make room for ${blockId}`);
-      } else {
-        slotIndex = 0; // Fallback
+      for (let i = 0; i < 3; i++) {
+        if (!occupiedSlots.has(i)) {
+          slotIndex = i;
+          break;
+        }
+      }
+
+      // If no free slots, find the oldest block and evict it
+      if (slotIndex === -1) {
+        // Remove the first (oldest) block from slots
+        const oldestBlockId = this.order[0];
+        if (oldestBlockId) {
+          slotIndex = this.slots[oldestBlockId];
+          delete this.slots[oldestBlockId];
+          this.order.shift();
+          console.warn(`Slot ${slotIndex} evicted block ${oldestBlockId} to make room for ${blockId}`);
+        } else {
+          slotIndex = 0; // Fallback
+        }
       }
     }
 
@@ -86,6 +93,27 @@ class SlotManager {
    */
   getSlotContent(slotIndex) {
     return this.content[slotIndex] || null;
+  }
+
+  /**
+   * Clear a specific slot
+   * @param {number} slotIndex - Slot index (0-2)
+   */
+  clearSlot(slotIndex) {
+    if (slotIndex >= 0 && slotIndex < 3) {
+      // Find and remove the block assigned to this slot
+      for (const [blockId, idx] of Object.entries(this.slots)) {
+        if (idx === slotIndex) {
+          delete this.slots[blockId];
+          const orderIndex = this.order.indexOf(blockId);
+          if (orderIndex > -1) {
+            this.order.splice(orderIndex, 1);
+          }
+          break;
+        }
+      }
+      this.content[slotIndex] = null;
+    }
   }
 
   /**
