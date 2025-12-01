@@ -334,7 +334,10 @@ Blockly.Blocks['horizontal_bar'] = {
   init: function () {
     this.jsonInit({
       "type": "horizontal_bar",
-      "message0": "display bar of %1 from %2 to %3 color %4 to %5 in %6 steps on %7",
+      "message0": "display bar of %1",
+      "message1": "from %1 to %2",
+      "message2": "color %1 to %2",
+      "message3": "in %1 steps on %2",
       "args0": [
         {
           "type": "field_dropdown",
@@ -382,7 +385,9 @@ Blockly.Blocks['horizontal_bar'] = {
             ["Thermocouple", "110"],
             ["Heart Rate", "111"]
           ]
-        },
+        }
+      ],
+      "args1": [
         {
           "type": "field_number",
           "name": "MIN",
@@ -392,7 +397,9 @@ Blockly.Blocks['horizontal_bar'] = {
           "type": "field_number",
           "name": "MAX",
           "value": 100
-        },
+        }
+      ],
+      "args2": [
         {
           "type": "field_colour",
           "name": "COLOR1"
@@ -400,7 +407,9 @@ Blockly.Blocks['horizontal_bar'] = {
         {
           "type": "field_colour",
           "name": "COLOR2"
-        },
+        }
+      ],
+      "args3": [
         {
           "type": "field_number",
           "name": "STEPS",

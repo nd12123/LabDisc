@@ -42,6 +42,7 @@ import { getToolboxForModel } from './toolboxes/toolbox_factory.js';
 import './blocks/patched/loop_patch.js';
 //import { getSensorValue } from './mock/labdisc.js';
 import './logic/display_logic.js';
+import { initializeSensorDataHandler } from './logic/sensorDataParser.js';
 
 import { initSaveLoad } from './logic/save_load.js';
 
@@ -58,6 +59,9 @@ window.getSensorValueRaw = function(id) {
 window.setSensorValue = function(id, value) {
   window.__mockSensorStore[id] = value;
 };
+
+// Initialize sensor data handler (supports binary stream parsing and sensor value management)
+initializeSensorDataHandler();
 
 // Карта соответствий: внутренний ID -> ключ конвертера + пост-обработка (если нужна)
 // Подставляю ТВОИ id из текущих блоков input/common.js (см. твой список)
@@ -164,6 +168,36 @@ document.getElementById("stopButton").addEventListener("click", () => {
   stopCode();
 });
 
+// Zoom controls
+document.getElementById("zoomInBtn").addEventListener("click", () => {
+  const workspace = Blockly.getMainWorkspace();
+  if (workspace) {
+    workspace.zoomCenter(1.2);
+  }
+});
+
+document.getElementById("zoomOutBtn").addEventListener("click", () => {
+  const workspace = Blockly.getMainWorkspace();
+  if (workspace) {
+    workspace.zoomCenter(1 / 1.2);
+  }
+});
+
+document.getElementById("zoomResetBtn").addEventListener("click", () => {
+  const workspace = Blockly.getMainWorkspace();
+  if (workspace) {
+    workspace.setScale(1.0);
+  }
+});
+
+// Trash/Delete All controls
+document.getElementById("trashBtn").addEventListener("click", () => {
+  const workspace = Blockly.getMainWorkspace();
+  if (workspace && confirm('Delete all blocks? This cannot be undone.')) {
+    workspace.clear();
+  }
+});
+
 window.playBeep = function (volume = 0.5, duration = 500) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const oscillator = ctx.createOscillator();
@@ -188,15 +222,22 @@ Blockly.fieldRegistry.register('field_colour', FieldColour);
 
 const movements = {scrollbars: { horizontal: true, vertical: true},drag: true,wheel: true};
 const zoom = {controls: true, wheel: true, startScale: 1.0, maxScale: 3, minScale: 0.3, scaleSpeed: 1.2, pinch: true}
+const grid = {
+  spacing: 25,
+  length: 3,
+  colour: '#f0f0f0',  // Very light grid for minimal visual distraction
+  snap: false         // Don't force snap to grid
+};
 
 //window.addEventListener('DOMContentLoaded', () => {
-  const workspace = Blockly.inject('blocklyDiv', { //workspace =  
+  const workspace = Blockly.inject('blocklyDiv', { //workspace =
     toolbox: toolbox,
     theme: MyOwnDarkTheme,
     renderer: 'zelos',
     zoom: zoom,
     move: movements,
-    trashcan: true, 
+    grid: grid,
+    trashcan: false, // Disabled - using custom toolbar button instead
     readOnly: false,
     //renderer:'zelos', readOnly: false,
     media: './media' //media from blockly? // ./blockly/media
