@@ -11,24 +11,42 @@
 const SENSOR_META = {
   1: {
     id: 1,
-    name: 'Ambient Temperature',
-    unit: '°C',
-    min: -10,
-    max: 60,
-    decimals: 1,
-    scale: 10
-  },
-  2: {
-    id: 2,
-    name: 'Light',
-    unit: 'lx',
+    name: 'UV',
+    unit: 'UV',
     min: 0,
-    max: 2000,
+    max: 14,
     decimals: 0,
     scale: 1
   },
-  3: {
-    id: 3,
+  2: {
+    id: 2,
+    name: 'pH',
+    unit: 'pH',
+    min: 0,
+    max: 14,
+    decimals: 2,
+    scale: 100
+  },
+  4: {
+    id: 4,
+    name: 'Barometer',
+    unit: 'mBar',
+    min: 500,
+    max: 1150,
+    decimals: 1,
+    scale: 10
+  },
+  5: {
+    id: 5,
+    name: 'IR Temperature',
+    unit: '°C',
+    min: -170,
+    max: 380,
+    decimals: 1,
+    scale: 10
+  },
+  6: {
+    id: 6,
     name: 'Humidity',
     unit: '%RH',
     min: 0,
@@ -36,140 +54,113 @@ const SENSOR_META = {
     decimals: 1,
     scale: 10
   },
-  4: {
-    id: 4,
-    name: 'Distance',
-    unit: 'm',
+  20: {
+    id: 20,
+    name: 'Light',
+    unit: 'lx',
     min: 0,
-    max: 5,
-    decimals: 2,
-    scale: 100
-  },
-  5: {
-    id: 5,
-    name: 'Sound Level',
-    unit: 'dBa',
-    min: 50,
-    max: 130,
+    max: 55000,
     decimals: 0,
     scale: 1
   },
-  6: {
-    id: 6,
-    name: 'pH',
-    unit: '',
-    min: 0,
-    max: 14,
+  21: {
+    id: 21,
+    name: 'Sound',
+    unit: 'dB',
+    min: 54,
+    max: 96,
     decimals: 1,
     scale: 10
   },
-  7: {
-    id: 7,
+  25: {
+    id: 25,
+    name: 'Distance',
+    unit: 'm',
+    min: 0.4,
+    max: 10,
+    decimals: 2,
+    scale: 100
+  },
+  26: {
+    id: 26,
     name: 'Air Pressure',
     unit: 'kPa',
-    min: 500,
-    max: 1100,
-    decimals: 0,
-    scale: 1
-  },
-  8: {
-    id: 8,
-    name: 'Current',
-    unit: 'A',
     min: 0,
-    max: 3,
-    decimals: 2,
-    scale: 100
+    max: 300,
+    decimals: 1,
+    scale: 10
   },
-  9: {
-    id: 9,
+  27: {
+    id: 27,
     name: 'Voltage',
     unit: 'V',
-    min: 0,
-    max: 5,
+    min: -30,
+    max: 30,
     decimals: 2,
     scale: 100
   },
-  10: {
-    id: 10,
-    name: 'Barometer',
-    unit: 'mB',
-    min: 500,
-    max: 1100,
-    decimals: 0,
-    scale: 1
+  28: {
+    id: 28,
+    name: 'Current',
+    unit: 'A',
+    min: -1,
+    max: 1,
+    decimals: 3,
+    scale: 1000
   },
-  11: {
-    id: 11,
+  30: {
+    id: 30,
+    name: 'Amb. Temperature',
+    unit: '°C',
+    min: -10,
+    max: 50,
+    decimals: 1,
+    scale: 10
+  },
+  34: {
+    id: 34,
+    name: 'Low Voltage',
+    unit: 'mV',
+    min: -500,
+    max: 500,
+    decimals: 1,
+    scale: 10
+  },
+  35: {
+    id: 35,
+    name: 'Acceleration',
+    unit: 'g',
+    min: -8,
+    max: 8,
+    decimals: 3,
+    scale: 1000
+  },
+  40: {
+    id: 40,
     name: 'Dissolved Oxygen',
     unit: 'mg/l',
     min: 0,
     max: 14,
-    decimals: 1,
-    scale: 10
-  },
-  12: {
-    id: 12,
-    name: 'Conductivity',
-    unit: 'ms',
-    min: 0,
-    max: 2000,
-    decimals: 1,
-    scale: 10
-  },
-  13: {
-    id: 13,
-    name: 'Thermocouple',
-    unit: '°C',
-    min: -20,
-    max: 1000,
-    decimals: 1,
-    scale: 10
-  },
-  14: {
-    id: 14,
-    name: 'Accelerometer (z)',
-    unit: 'g',
-    min: -5,
-    max: 5,
     decimals: 2,
     scale: 100
   },
-  15: {
-    id: 15,
-    name: 'IR Temperature',
-    unit: '°C',
-    min: -20,
-    max: 80,
-    decimals: 0,
-    scale: 1
-  },
-  16: {
-    id: 16,
-    name: 'UV',
-    unit: '',
-    min: 0,
-    max: 100,
-    decimals: 0,
-    scale: 1
-  },
-  17: {
-    id: 17,
-    name: 'UV Index',
-    unit: '',
+  41: {
+    id: 41,
+    name: 'Conductivity',
+    unit: 'mS',
     min: 0,
     max: 20,
-    decimals: 0,
-    scale: 1
-  },
-  18: {
-    id: 18,
-    name: 'Low Voltage',
-    unit: 'mV',
-    min: 0,
-    max: 1000,
     decimals: 2,
     scale: 100
+  },
+  42: {
+    id: 42,
+    name: 'Thermocouple',
+    unit: '°C',
+    min: -220,
+    max: 1350,
+    decimals: 1,
+    scale: 10
   }
 };
 

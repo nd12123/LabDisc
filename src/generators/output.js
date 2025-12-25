@@ -39,24 +39,24 @@ javascriptGenerator.forBlock['display_var'] = function(block) {
   if (inputBlock) {
     const blockType = inputBlock.type;
 
-    // Map sensor block types to their internal sensor IDs
+    // Map sensor block types to their internal sensor IDs (matching CSV "Code" column)
     // Comprehensive mapping covering all models: common, physio, biochem, enviro, gensci
     const sensorMap = {
-      // Common blocks (all models)
-      'get_ambient_temperature': '1',
-      'get_temperature': '1',        // alias
-      'get_amb_temp': '1',           // alias
-      'get_light': '2',
-      'get_ph': '3',
-      'get_external_temperature': '12',
-      'get_external': '12',          // alias
-      'get_barometer': '14',
-      'get_humidity': '15',
-      'get_sound_level': '9',
-      'get_distance': '18',
-      'get_air_pressure': '11',
-      'get_voltage': '6',
-      'get_current': '5',
+      // Common blocks (all models) - updated to match hardware codes
+      'get_ambient_temperature': '30',
+      'get_temperature': '30',        // alias
+      'get_amb_temp': '30',           // alias
+      'get_light': '20',
+      'get_ph': '2',
+      'get_external_temperature': '13',
+      'get_external': '13',          // alias
+      'get_barometer': '4',
+      'get_humidity': '6',
+      'get_sound_level': '21',
+      'get_distance': '25',
+      'get_air_pressure': '26',
+      'get_voltage': '27',
+      'get_current': '28',
       'get_external1': '32',
       'get_microphone': '33',
       'get_do': '40',
@@ -64,37 +64,37 @@ javascriptGenerator.forBlock['display_var'] = function(block) {
       'get_conductivity': '41',
 
       // Physio-specific blocks
-      'physio_get_low_voltage': '316',
-      'physio_get_external1': '321',
-      'physio_get_external2': '391',
+      'physio_get_low_voltage': '34',
+      'physio_get_external1': '32',
+      'physio_get_external2': '39',
 
       // BioChem-specific blocks
-      'biochem_get_hr': '111',
-      'biochem_get_thermocouple': '110',
+      'biochem_get_hr': '22',
+      'biochem_get_thermocouple': '42',
 
       // Enviro-specific blocks
-      'enviro_get_uv': '401',
-      'enviro_get_ir_temperature': '405',
-      'enviro_get_barometer': '403',
-      'enviro_get_gps_lat': '410',
-      'enviro_get_gps_lon': '411',
-      'enviro_get_gps_speed': '412',
-      'enviro_get_gps_course': '413',
-      'enviro_get_gps_time': '414',
-      'enviro_get_color_r': '420',
-      'enviro_get_color_g': '421',
-      'enviro_get_color_b': '422',
-      'enviro_get_turbidity': '431',
-      'enviro_get_do': '440',
+      'enviro_get_uv': '1',
+      'enviro_get_ir_temperature': '5',
+      'enviro_get_barometer': '4',
+      'enviro_get_gps_lat': '7',
+      'enviro_get_gps_lon': '7',
+      'enviro_get_gps_speed': '7',
+      'enviro_get_gps_course': '7',
+      'enviro_get_gps_time': '7',
+      'enviro_get_color_r': '14',
+      'enviro_get_color_g': '14',
+      'enviro_get_color_b': '14',
+      'enviro_get_turbidity': '31',
+      'enviro_get_do': '40',
 
       // GenSci-specific blocks
-      'gensci_get_humidity': '205',
-      'gensci_get_microphone': '233',
-      'gensci_get_gps_lat': '210',
-      'gensci_get_gps_lon': '211',
-      'gensci_get_gps_speed': '212',
-      'gensci_get_gps_course': '213',
-      'gensci_get_gps_time': '214'
+      'gensci_get_humidity': '6',
+      'gensci_get_microphone': '33',
+      'gensci_get_gps_lat': '7',
+      'gensci_get_gps_lon': '7',
+      'gensci_get_gps_speed': '7',
+      'gensci_get_gps_course': '7',
+      'gensci_get_gps_time': '7'
     };
 
     sensorId = sensorMap[blockType];
@@ -102,42 +102,33 @@ javascriptGenerator.forBlock['display_var'] = function(block) {
 
   // If sensor detected, pass sensorId for live polling; otherwise pass captured value
   if (sensorId) {
-    // Get sensor name and unit from the sensor block for better display
+    // Get sensor name and unit from the sensor block for better display (updated to match CSV codes)
     const sensorNames = {
-      '1': ['Temperature', '°C'],
-      '2': ['Light', 'lx'],
-      '3': ['pH', 'pH'],
-      '5': ['Current', 'mA'],
-      '6': ['Voltage', 'V'],
-      '9': ['Sound Level', 'dB'],
-      '11': ['Air Pressure', 'kPa'],
-      '12': ['External Temp', '°C'],
-      '14': ['Barometer', 'mBar'],
-      '15': ['Humidity', '%'],
-      '18': ['Distance', 'm'],
+      '1': ['UV', 'UV'],
+      '2': ['pH', 'pH'],
+      '4': ['Barometer', 'mBar'],
+      '5': ['IR Temperature', '°C'],
+      '6': ['Humidity', '%RH'],
+      '7': ['GPS', ''],
+      '13': ['Ext. Temperature', '°C'],
+      '14': ['Colorimeter', '%T'],
+      '20': ['Light', 'lx'],
+      '21': ['Sound', 'dB'],
+      '22': ['Heart Rate', 'bpm'],
+      '25': ['Distance', 'm'],
+      '26': ['Air Pressure', 'kPa'],
+      '27': ['Voltage', 'V'],
+      '28': ['Current', 'A'],
+      '30': ['Amb. Temperature', '°C'],
       '31': ['Turbidity', 'NTU'],
-      '32': ['External Input 1', 'V'],
+      '32': ['External Sensor 1', 'V'],
       '33': ['Microphone', 'V'],
-      '40': ['Dissolved O₂', 'mg/L'],
+      '34': ['Low Voltage', 'mV'],
+      '35': ['Acceleration', 'g'],
+      '39': ['External Sensor 2', 'V'],
+      '40': ['Dissolved Oxygen', 'mg/l'],
       '41': ['Conductivity', 'mS'],
-      '110': ['Thermocouple', '°C'],
-      '111': ['Heart Rate', 'bpm'],
-      '316': ['Low Voltage', 'V'],
-      '321': ['External 1', 'V'],
-      '391': ['External 2', 'V'],
-      '401': ['UV Index', ''],
-      '403': ['Barometer', 'mBar'],
-      '405': ['IR Temp', '°C'],
-      '410': ['GPS Lat', '°'],
-      '411': ['GPS Lon', '°'],
-      '412': ['GPS Speed', ''],
-      '413': ['GPS Course', '°'],
-      '414': ['GPS Time', 's'],
-      '420': ['Color R', '%T'],
-      '421': ['Color G', '%T'],
-      '422': ['Color B', '%T'],
-      '431': ['Turbidity', 'NTU'],
-      '440': ['Dissolved O₂', 'mg/L']
+      '42': ['Thermocouple', '°C']
     };
     const [sensorName, sensorUnit] = sensorNames[sensorId] || ['Sensor ' + sensorId, ''];
     return `displayVariable("${blockId}", null, "${sensorName}", "${sensorUnit}", "${color}", "${bg}", "${pos}", "${sensorId}");\n`;
@@ -154,49 +145,33 @@ javascriptGenerator.forBlock['display_sensor'] = function(block) {
   const pos = block.getFieldValue('POSITION') || 'center';
   const blockId = block.id;
 
-  // Map sensor IDs to their names and units
+  // Map sensor IDs to their names and units (updated to match CSV codes)
   const sensorMetadata = {
-    '1': { name: 'Temperature', unit: '°C' },
-    '2': { name: 'Light', unit: 'lx' },
-    '3': { name: 'pH', unit: 'pH' },
-    '5': { name: 'Current', unit: 'mA' },
-    '6': { name: 'Voltage', unit: 'V' },
-    '9': { name: 'Sound Level', unit: 'dB' },
-    '11': { name: 'Air Pressure', unit: 'kPa' },
-    '12': { name: 'External Temp', unit: '°C' },
-    '14': { name: 'Barometer', unit: 'mBar' },
-    '15': { name: 'Humidity', unit: '%' },
-    '18': { name: 'Distance', unit: 'm' },
+    '1': { name: 'UV', unit: 'UV' },
+    '2': { name: 'pH', unit: 'pH' },
+    '4': { name: 'Barometer', unit: 'mBar' },
+    '5': { name: 'IR Temperature', unit: '°C' },
+    '6': { name: 'Humidity', unit: '%RH' },
+    '7': { name: 'GPS', unit: '' },
+    '13': { name: 'Ext. Temperature', unit: '°C' },
+    '14': { name: 'Colorimeter', unit: '%T' },
+    '20': { name: 'Light', unit: 'lx' },
+    '21': { name: 'Sound', unit: 'dB' },
+    '22': { name: 'Heart Rate', unit: 'bpm' },
+    '25': { name: 'Distance', unit: 'm' },
+    '26': { name: 'Air Pressure', unit: 'kPa' },
+    '27': { name: 'Voltage', unit: 'V' },
+    '28': { name: 'Current', unit: 'A' },
+    '30': { name: 'Amb. Temperature', unit: '°C' },
     '31': { name: 'Turbidity', unit: 'NTU' },
-    '32': { name: 'External Input 1', unit: 'V' },
+    '32': { name: 'External Sensor 1', unit: 'V' },
     '33': { name: 'Microphone', unit: 'V' },
-    '40': { name: 'Dissolved O₂', unit: 'mg/L' },
+    '34': { name: 'Low Voltage', unit: 'mV' },
+    '35': { name: 'Acceleration', unit: 'g' },
+    '39': { name: 'External Sensor 2', unit: 'V' },
+    '40': { name: 'Dissolved Oxygen', unit: 'mg/l' },
     '41': { name: 'Conductivity', unit: 'mS' },
-    '110': { name: 'Thermocouple', unit: '°C' },
-    '111': { name: 'Heart Rate', unit: 'bpm' },
-    '205': { name: 'Humidity', unit: '%' },
-    '210': { name: 'GPS Lat', unit: '°' },
-    '211': { name: 'GPS Lon', unit: '°' },
-    '212': { name: 'GPS Speed', unit: 'km/h' },
-    '213': { name: 'GPS Course', unit: '°' },
-    '214': { name: 'GPS Time', unit: 's' },
-    '233': { name: 'Microphone', unit: 'V' },
-    '316': { name: 'Low Voltage', unit: 'V' },
-    '321': { name: 'External 1', unit: 'V' },
-    '391': { name: 'External 2', unit: 'V' },
-    '401': { name: 'UV Index', unit: '' },
-    '403': { name: 'Barometer', unit: 'mBar' },
-    '405': { name: 'IR Temp', unit: '°C' },
-    '410': { name: 'GPS Lat', unit: '°' },
-    '411': { name: 'GPS Lon', unit: '°' },
-    '412': { name: 'GPS Speed', unit: 'km/h' },
-    '413': { name: 'GPS Course', unit: '°' },
-    '414': { name: 'GPS Time', unit: 's' },
-    '420': { name: 'Color R', unit: '%T' },
-    '421': { name: 'Color G', unit: '%T' },
-    '422': { name: 'Color B', unit: '%T' },
-    '431': { name: 'Turbidity', unit: 'NTU' },
-    '440': { name: 'Dissolved O₂', unit: 'mg/L' }
+    '42': { name: 'Thermocouple', unit: '°C' }
   };
 
   const metadata = sensorMetadata[id] || { name: `Sensor ${id}`, unit: '' };
@@ -238,11 +213,11 @@ javascriptGenerator.forBlock['horizontal_bar'] = function(block) {
   const pos = block.getFieldValue('POSITION') || 'center';
   const blockId = block.id;
 
-  // Map sensor IDs to labels and units
+  // Map sensor IDs to labels and units (updated to match CSV codes)
   const sensorMap = {
-    '1': { label: 'Temperature', unit: '°C' },
-    '2': { label: 'Light', unit: 'lx' },
-    '3': { label: 'pH', unit: 'pH' }
+    '30': { label: 'Amb. Temperature', unit: '°C' },
+    '20': { label: 'Light', unit: 'lx' },
+    '2': { label: 'pH', unit: 'pH' }
   };
 
   const sensorInfo = sensorMap[sensorId] || { label: `Sensor ${sensorId}`, unit: '' };
