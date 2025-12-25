@@ -48,55 +48,31 @@ import { initSaveLoad } from './logic/save_load.js';
 
 import { converters } from './conversion/index.js';
 
-//window.getSensorValue = getSensorValue;
-// mock sensor layer for development
-// mock sensor layer for development (RAW)
-window.__mockSensorStore = {};
-window.getSensorValueRaw = function(id) {
-  // СЫРОЕ значение с устройства (пока — из мок-хранилища)
-  return window.__mockSensorStore[id] ?? 0;
-};
-window.setSensorValue = function(id, value) {
-  window.__mockSensorStore[id] = value;
-};
-
 // Initialize sensor data handler (supports binary stream parsing and sensor value management)
+// This sets up window.handleSensorPacket() for Flutter to call with binary sensor data
+// It also initializes window.sensorValues = {} to store converted sensor readings
 initializeSensorDataHandler();
 
-// Карта соответствий: внутренний ID -> ключ конвертера + пост-обработка (если нужна)
-// Подставляю ТВОИ id из текущих блоков input/common.js (см. твой список)
-const SENSOR_MAP = {
-  // из твоего input_common.js:
-  1:  { key: 'temperature', unit: '°C' },     // temperature (C)
-  2:  { key: 'light', unit: 'lx' },           // light (lx) — НЕЛИНЕЙНО через LUT
-  3:  { key: 'ph', unit: 'pH' },              // pH (если вернёшь из комментария)
-  5:  { /* current mA */ },                   // mA — пока без конверсии (сырое)
-  6:  { /* voltage V */ },                    // V — пока без конверсии (сырое)
-  8:  { /* distance cm */ },                  // cm — пока без конверсии (сырое)
-  9:  { /* sound dB */ },                     // dB — пока без конверсии (сырое)
-  11: { /* pressure kPa */ },                 // kPa — у тебя отдельный датчик (сырое)
-  16: { key: 'low_voltage_mv', unit: 'V', post: (mv) => mv / 1000 }, // хотим вернуть в В
-  17: { /* accelerometer m/s^2 */ },          // аксель — сырое (если нужно — добавим позже)
-
-  // Если у тебя появится барометр отдельным ID — добавь сюда (пример):
-  // 103: { key: 'barometer', unit: 'mBar' },
+// Get sensor value - reads from window.sensorValues which is populated by handleSensorPacket()
+// The sensorDataParser already handles all conversions, so we just return the stored value
+// Note: initializeSensorDataHandler() creates a window.getSensorValue, but we override it here
+// to ensure compatibility with the existing codebase structure
+window.getSensorValue = function(id) {
+  // Read from sensorValues which is updated by handleSensorPacket()
+  // This is the real sensor data system used by Flutter
+  if (!window.sensorValues) {
+    window.sensorValues = {};
+  }
+  return window.sensorValues[id] ?? 0;
 };
 
-// ПЕРЕСЧИТАННОЕ значение (теперь ВСЕ блоки автоматически получают правильные числа)
-window.getSensorValue = function(id) {
-  const raw = window.getSensorValueRaw(id);
-  const storeHasValue = window.__mockSensorStore[id] !== undefined;
-
-  // If store is empty (value is undefined), return 0 directly without conversion
-  // This provides a sensible default when no real sensor value exists yet
-  // Only apply converters when a non-zero value exists in the store
-  if (!storeHasValue) {
-    return 0;
+// Helper function for manual testing in console
+// This allows developers to manually set sensor values for testing without Flutter
+window.setSensorValue = function(id, value) {
+  if (!window.sensorValues) {
+    window.sensorValues = {};
   }
-
-  // Value explicitly set via setSensorValue - return it directly without conversion
-  // This allows users to mock sensor values in the console
-  return raw;
+  window.sensorValues[id] = value;
 };
 
 /*
