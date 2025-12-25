@@ -152,21 +152,19 @@ console.log('Selected model:', currentModel);
 const toolbox = getToolboxForModel(currentModel);
 
 
-//running JS code
-document.getElementById("runButton").addEventListener("click", () => {
+// Expose run/stop functions globally for Flutter integration
+window.runWorkspace = function() {
   const code = javascriptGenerator.workspaceToCode(Blockly.getMainWorkspace());
   console.clear();
   console.log("Generated JS:", code);
-  runCode(code)
-});
+  runCode(code);
+};
 
-document.getElementById("stopButton").addEventListener("click", () => {
-  clearScreen(); // очистим UI
-  console.clear(); // по желанию
-  // Здесь можно сбрасывать состояние, отменять таймеры
-  //stopPolling();
+window.stopWorkspace = function() {
+  clearScreen();
+  console.clear();
   stopCode();
-});
+};
 
 // Zoom controls
 document.getElementById("zoomInBtn").addEventListener("click", () => {
@@ -244,7 +242,7 @@ const grid = {
   });
 
 
-  initSaveLoad(workspace);
+  initSaveLoad();
 
 
   window.Blockly = Blockly;
@@ -266,6 +264,47 @@ const grid = {
 //console.log(window.workspace)
 }, 0);
 //});
+
+// ------------------------------------------------------------------
+// MODEL SWITCHING FUNCTION FOR FLUTTER INTEGRATION
+// ------------------------------------------------------------------
+
+/**
+ * Switches the current model and reloads the toolbox
+ * Optionally clears the workspace (recommended when switching models)
+ * @param {string} modelName - Model name: 'physio', 'biochem', 'enviro', 'gensci', or 'default'
+ * @param {boolean} clearWorkspace - Whether to clear workspace after switching (default: true)
+ */
+window.setModel = function(modelName, clearWorkspace = true) {
+  try {
+    // Get new toolbox for the model
+    const newToolbox = getToolboxForModel(modelName);
+
+    // Update the workspace toolbox
+    window.workspace.updateToolbox(newToolbox);
+
+    // Clear workspace if requested (recommended to avoid incompatible blocks)
+    if (clearWorkspace) {
+      window.workspace.clear();
+    }
+
+    // Re-select default category (Output category at index 0)
+    setTimeout(() => {
+      const toolbox = window.workspace.getToolbox();
+      const categories = toolbox.getToolboxItems();
+      if (categories && categories.length > 0) {
+        const defaultCategory = categories[0]; // Select first category (Input)
+        toolbox.setSelectedItem(defaultCategory);
+      }
+    }, 0);
+
+    console.log('Model switched to:', modelName);
+    return true;
+  } catch (e) {
+    console.error('Error switching model:', e);
+    return false;
+  }
+};
 
 
 /*

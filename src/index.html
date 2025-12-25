@@ -114,24 +114,6 @@
       overflow: hidden;
     }
 
-    .bottom-bar {
-      padding: 12px;
-      background: #FFF9F3;
-      border-top: 1px solid #ddd;
-      flex-shrink: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .bottom-bar button {
-      font-size: 13px;
-      padding: 8px 14px;
-    }
-
     #blocklyDiv {
       flex: 1;
       overflow: hidden;
@@ -191,16 +173,6 @@
       .toolbar {
         flex-wrap: wrap;
       }
-
-      .bottom-bar {
-        gap: 8px;
-        padding: 10px;
-      }
-
-      .bottom-bar button {
-        font-size: 12px;
-        padding: 6px 12px;
-      }
     }
 
     @media (max-width: 768px) {
@@ -216,13 +188,6 @@
       .toolbar-left button {
         font-size: 12px;
         padding: 7px 10px;
-      }
-
-      .bottom-bar button {
-        font-size: 12px;
-        padding: 7px 12px;
-        flex: 1;
-        min-width: 70px;
       }
     }
 
@@ -251,17 +216,6 @@
         font-size: 11px;
         padding: 5px 8px;
       }
-
-      .bottom-bar {
-        gap: 6px;
-        padding: 8px;
-      }
-
-      .bottom-bar button {
-        font-size: 11px;
-        padding: 5px 10px;
-        flex: 1;
-      }
     }
   </style>
 </head>
@@ -280,12 +234,6 @@
       <div class="workspace-container">
         <div id="blocklyDiv"></div>
         <div id="outputPanel"></div>
-      </div>
-      <div class="bottom-bar">
-        <button id="runButton">▶️ Run</button>
-        <button id="stopButton">⏹ Stop</button>
-        <button id="saveBtn">💾 Save</button>
-        <button id="loadBtn">📂 Load</button>
       </div>
     </div>
   </div>
