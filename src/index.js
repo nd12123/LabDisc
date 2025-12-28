@@ -288,42 +288,69 @@ function waitForToolboxReady(maxRetries = 30) {
  * @param {boolean} clearWorkspace - Whether to clear workspace after switching (default: true)
  * @returns {Promise<boolean>} - Resolves true on success, false on error
  */
-window.setModel = async function(modelName, clearWorkspace = true) {
+/**
+ * Switches Blockly model safely (Flutter WebView–safe)
+ * - No recursion
+ * - No event-loop starvation
+ * - Deterministic completion
+ */
+window.setModel = async function setModel(modelName, clearWorkspace = true) {
   try {
-    // Step 1: Wait for workspace to be initialized
-    if (!window.workspace?.getToolbox) {
-      console.warn('Workspace not ready yet, waiting...');
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      return window.setModel(modelName, clearWorkspace);
+    // ---- 1. Wait for workspace to exist (bounded) ----
+    let retries = 30;
+    while ((!window.workspace || window.workspace.isDisposed()) && retries-- > 0) {
+      await new Promise(r => requestAnimationFrame(r));
     }
 
-    // Step 2: Clear workspace BEFORE updating toolbox (prevents lock during rebuild)
+    if (!window.workspace || window.workspace.isDisposed()) {
+      console.error('[setModel] Workspace not ready');
+      return false;
+    }
+
+    // ---- 2. Capture old toolbox reference ----
+    const oldToolbox = window.workspace.getToolbox();
+
+    // ---- 3. Clear workspace BEFORE toolbox update ----
     if (clearWorkspace) {
       window.workspace.clear();
     }
 
-    // Step 3: Update toolbox (async internal operation in Blockly)
-    const newToolbox = getToolboxForModel(modelName);
-    window.workspace.updateToolbox(newToolbox);
+    // ---- 4. Update toolbox (async internal rebuild) ----
+    const newToolboxDef = getToolboxForModel(modelName);
+    window.workspace.updateToolbox(newToolboxDef);
 
-    // Step 4: Wait for toolbox rebuild to complete
-    const ready = await waitForToolboxReady();
-    if (!ready) {
-      console.error('Toolbox failed to rebuild');
+    // ---- 5. Wait for NEW toolbox to be attached & populated ----
+    retries = 30;
+    let toolbox = null;
+
+    while (retries-- > 0) {
+      toolbox = window.workspace.getToolbox();
+      const items = toolbox?.getToolboxItems?.();
+
+      // Toolbox must be new AND have items
+      if (toolbox && toolbox !== oldToolbox && items && items.length > 0) {
+        break;
+      }
+
+      await new Promise(r => requestAnimationFrame(r));
+    }
+
+    if (!toolbox || toolbox === oldToolbox) {
+      console.error('[setModel] Toolbox failed to update');
       return false;
     }
 
-    // Step 5: Re-select first category (Input) after rebuild completes
-    const toolbox = window.workspace.getToolbox();
+    // ---- 6. Select default category safely ----
     const categories = toolbox.getToolboxItems();
     if (categories && categories.length > 0) {
       toolbox.setSelectedItem(categories[0]);
     }
 
-    console.log('Model switched to:', modelName);
+    console.log('[setModel] Model switched:', modelName);
     return true;
+
   } catch (e) {
-    console.error('Error switching model:', e);
+    console.error('[setModel] Error:', e);
     return false;
   }
 };
