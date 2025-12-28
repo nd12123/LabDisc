@@ -230,6 +230,8 @@ const grid = {
   window.workspace = Blockly.getMainWorkspace(); // tweaking with the workspace
   //window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
 
+window.blocklyReady = true;
+
 
   // 1. Оборачиваем  в setTimeout или ставим после inject'а, чтобы Blockly успел полностью загрузиться.
   //setTimeout(() => {
