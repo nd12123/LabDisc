@@ -214,7 +214,7 @@ const grid = {
     trashcan: false, // Disabled - using custom toolbar button instead
     readOnly: false,
     //renderer:'zelos', readOnly: false,
-    media: './media' //media from blockly? // ./blockly/media
+    media: 'media/'//'./media' //media from blockly? // ./blockly/media
   });
 
 
@@ -227,18 +227,18 @@ const grid = {
 
 
   // 1. Оборачиваем  в setTimeout или ставим после inject’а, чтобы Blockly успел полностью загрузиться.
-  setTimeout(() => {
+  //setTimeout(() => {
   // 2. Берём тулбокс через API:
-  const toolbox = workspace.getToolbox();
+  //const toolbox = workspace.getToolbox();
   // 3. Получаем массив айтемов — это объекты ToolboxCategory или ToolboxSeparator в порядке, как они идут в XML/toolbox.js:
-  const categories = toolbox.getToolboxItems();
+  //const categories = toolbox.getToolboxItems();
   // 4. Убедитесь, что именно столько категорий в вашем XML, иначе IndexError.
-  const defaultCategory = categories[1];
+  //const defaultCategory = categories[1];
   // 5. Вызываем setSelectedItem, чтобы «открыть» её:
-  toolbox.setSelectedItem(defaultCategory);
+  //toolbox.setSelectedItem(defaultCategory);
 
 //console.log(window.workspace)
-}, 0);
+//}, 0);
 //});
 
 // ------------------------------------------------------------------
