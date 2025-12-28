@@ -246,44 +246,88 @@ const grid = {
 // ------------------------------------------------------------------
 
 /**
+ * Helper: Waits for toolbox to be ready with actual items (not just initialized)
+ * Uses requestAnimationFrame to avoid blocking the event loop
+ * @param {number} maxRetries - Maximum number of retries (default: 30 = ~500ms)
+ * @returns {Promise<boolean>} - Resolves true when ready, false on timeout
+ */
+function waitForToolboxReady(maxRetries = 30) {
+  return new Promise((resolve) => {
+    let retries = 0;
+
+    function check() {
+      const toolbox = window.workspace?.getToolbox?.();
+      const items = toolbox?.getToolboxItems?.();
+
+      // Toolbox is ready when it exists AND has items
+      if (toolbox && items && items.length > 0) {
+        resolve(true);
+        return;
+      }
+
+      retries++;
+      if (retries >= maxRetries) {
+        console.warn('Toolbox ready timeout');
+        resolve(false);
+        return;
+      }
+
+      // Use requestAnimationFrame to yield to browser between checks
+      // This prevents event-loop starvation in Flutter WebView
+      requestAnimationFrame(check);
+    }
+
+    check();
+  });
+}
+
+/**
  * Switches the current model and reloads the toolbox
  * Optionally clears the workspace (recommended when switching models)
  * @param {string} modelName - Model name: 'physio', 'biochem', 'enviro', 'gensci', or 'default'
  * @param {boolean} clearWorkspace - Whether to clear workspace after switching (default: true)
+ * @returns {Promise<boolean>} - Resolves true on success, false on error
  */
-window.setModel = function(modelName, clearWorkspace = true) {
+window.setModel = async function(modelName, clearWorkspace = true) {
   try {
-    console.log('setModel called with:', modelName, 'clearWorkspace:', clearWorkspace);
+    // Step 1: Wait for workspace to be initialized
+    if (!window.workspace?.getToolbox) {
+      console.warn('Workspace not ready yet, waiting...');
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      return window.setModel(modelName, clearWorkspace);
+    }
 
-    // CRITICAL: Clear workspace BEFORE updating toolbox to avoid rendering conflicts
+    // Step 2: Clear workspace BEFORE updating toolbox (prevents lock during rebuild)
     if (clearWorkspace) {
       window.workspace.clear();
     }
 
-    // Get new toolbox for the model
+    // Step 3: Update toolbox (async internal operation in Blockly)
     const newToolbox = getToolboxForModel(modelName);
-
-    // Update the workspace toolbox
     window.workspace.updateToolbox(newToolbox);
 
-    // Re-select default category with longer delay for Flutter integration
-    // Increase timeout to ensure Blockly has finished rendering
-    setTimeout(() => {
-      const toolbox = window.workspace.getToolbox();
-      const categories = toolbox.getToolboxItems();
-      if (categories && categories.length > 0) {
-        const defaultCategory = categories[0]; // Select first category (Input)
-        toolbox.setSelectedItem(defaultCategory);
-      }
-      console.log('Model switch completed:', modelName);
-    }, 100); // Increased from 0 to 100ms for Flutter compatibility
+    // Step 4: Wait for toolbox rebuild to complete
+    const ready = await waitForToolboxReady();
+    if (!ready) {
+      console.error('Toolbox failed to rebuild');
+      return false;
+    }
 
+    // Step 5: Re-select first category (Input) after rebuild completes
+    const toolbox = window.workspace.getToolbox();
+    const categories = toolbox.getToolboxItems();
+    if (categories && categories.length > 0) {
+      toolbox.setSelectedItem(categories[0]);
+    }
+
+    console.log('Model switched to:', modelName);
     return true;
   } catch (e) {
     console.error('Error switching model:', e);
     return false;
   }
 };
+
 
 
 /*
