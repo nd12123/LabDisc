@@ -253,18 +253,21 @@ const grid = {
  */
 window.setModel = function(modelName, clearWorkspace = true) {
   try {
+    console.log('setModel called with:', modelName, 'clearWorkspace:', clearWorkspace);
+
+    // CRITICAL: Clear workspace BEFORE updating toolbox to avoid rendering conflicts
+    if (clearWorkspace) {
+      window.workspace.clear();
+    }
+
     // Get new toolbox for the model
     const newToolbox = getToolboxForModel(modelName);
 
     // Update the workspace toolbox
     window.workspace.updateToolbox(newToolbox);
 
-    // Clear workspace if requested (recommended to avoid incompatible blocks)
-    if (clearWorkspace) {
-      window.workspace.clear();
-    }
-
-    // Re-select default category (Output category at index 0)
+    // Re-select default category with longer delay for Flutter integration
+    // Increase timeout to ensure Blockly has finished rendering
     setTimeout(() => {
       const toolbox = window.workspace.getToolbox();
       const categories = toolbox.getToolboxItems();
@@ -272,9 +275,9 @@ window.setModel = function(modelName, clearWorkspace = true) {
         const defaultCategory = categories[0]; // Select first category (Input)
         toolbox.setSelectedItem(defaultCategory);
       }
-    }, 0);
+      console.log('Model switch completed:', modelName);
+    }, 100); // Increased from 0 to 100ms for Flutter compatibility
 
-    console.log('Model switched to:', modelName);
     return true;
   } catch (e) {
     console.error('Error switching model:', e);

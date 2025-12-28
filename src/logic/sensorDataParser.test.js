@@ -37,14 +37,14 @@ function testFormatSensorValue() {
   console.log('\n=== Test: formatSensorValue ===');
 
   const testCases = [
-    // Sensor 30: Amb. Temperature (1 decimal)
-    { sensorId: 30, value: 253, expected: { text: '25.3', decimals: 1 } },
-    // Sensor 20: Light (0 decimals)
+    // Sensor 30: Amb. Temperature (1 decimal) - Flutter sends 25.3
+    { sensorId: 30, value: 25.3, expected: { text: '25.3', decimals: 1 } },
+    // Sensor 20: Light (0 decimals) - Flutter sends 1500
     { sensorId: 20, value: 1500, expected: { text: '1500', decimals: 0 } },
-    // Sensor 25: Distance (2 decimals)
-    { sensorId: 25, value: 312, expected: { text: '3.12', decimals: 2 } },
-    // Sensor 28: Current (3 decimals)
-    { sensorId: 28, value: 157, expected: { text: '0.157', decimals: 3 } },
+    // Sensor 25: Distance (2 decimals) - Flutter sends 3.12
+    { sensorId: 25, value: 3.12, expected: { text: '3.12', decimals: 2 } },
+    // Sensor 28: Current (3 decimals) - Flutter sends 0.157
+    { sensorId: 28, value: 0.157, expected: { text: '0.157', decimals: 3 } },
   ];
 
   testCases.forEach(({ sensorId, value, expected }) => {
@@ -56,19 +56,20 @@ function testFormatSensorValue() {
 
 /**
  * Test 3: Create and parse test packet
- * Updated to use hardware sensor codes
+ * Updated to Flutter format: [count, id1, val1, id2, val2, ...]
  */
 function testPacketCreationAndParsing() {
   console.log('\n=== Test: Packet Creation and Parsing ===');
 
   const sensors = [
-    { sensorId: 30, value: 253 },    // Amb. Temp: 25.3°C
-    { sensorId: 20, value: 1500 },   // Light: 1500lx
-    { sensorId: 28, value: 157 },    // Current: 0.157A
+    { sensorId: 30, value: 25.3 },   // Amb. Temp: Flutter sends 25.3°C
+    { sensorId: 20, value: 1500 },   // Light: Flutter sends 1500lx
+    { sensorId: 28, value: 0.157 },  // Current: Flutter sends 0.157A
   ];
 
   const packet = createTestPacket(sensors);
-  console.log(`  Created packet (${packet.length} bytes):`, Array.from(packet).map(b => `0x${b.toString(16).padStart(2, '0')}`).join(' '));
+  console.log(`  Created packet (${packet.length} values):`, packet);
+  console.log(`  Format: [count=${packet[0]}, id=${packet[1]}, val=${packet[2]}, id=${packet[3]}, val=${packet[4]}, ...]`);
 
   const parsed = parseSensorPacket(packet);
   console.log(`  Parsed ${parsed.length} sensors:`);
@@ -81,20 +82,21 @@ function testPacketCreationAndParsing() {
 }
 
 /**
- * Test 4: Multiple packets
- * Updated to use hardware sensor codes
+ * Test 4: Multiple packets (Flutter format)
+ * Updated to use hardware sensor codes and simplified format
  */
 function testMultiplePackets() {
   console.log('\n=== Test: Multiple Packets ===');
 
   const packets = [
-    { sensors: [{ sensorId: 30, value: 220 }, { sensorId: 6, value: 550 }], label: '22°C, 55% RH' },
-    { sensors: [{ sensorId: 21, value: 850 }], label: '85 dB' },
-    { sensors: [{ sensorId: 30, value: 251 }, { sensorId: 20, value: 2000 }, { sensorId: 25, value: 312 }], label: '25.1°C, 2000lx, 3.12m' },
+    { sensors: [{ sensorId: 30, value: 22.0 }, { sensorId: 6, value: 55.0 }], label: '22°C, 55% RH' },
+    { sensors: [{ sensorId: 21, value: 85.0 }], label: '85 dB' },
+    { sensors: [{ sensorId: 30, value: 25.1 }, { sensorId: 20, value: 2000 }, { sensorId: 25, value: 3.12 }], label: '25.1°C, 2000lx, 3.12m' },
   ];
 
   packets.forEach(({ sensors, label }) => {
     const packet = createTestPacket(sensors);
+    console.log(`  Packet: ${JSON.stringify(packet)}`);
     const parsed = parseSensorPacket(packet);
     console.log(`  [${label}]`);
     parsed.forEach(r => console.log(`    → ${r.name}: ${r.text} ${r.unit}`));

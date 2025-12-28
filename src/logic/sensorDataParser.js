@@ -1,41 +1,49 @@
 /**
  * sensorDataParser.js
- * Binary data stream parser for Moshe's sensor hardware
- * Handles 2 Hz updates with variable sensor counts
+ * Sensor data parser for LabDisc hardware via Flutter
+ * Handles sensor updates with variable sensor counts
  *
- * Format: [NumOfSensors(1B)][Sensor1_ID(1B)][Sensor1_value(2B)]...[SensorN_ID(1B)][SensorN_value(2B)]
+ * Format: [NumOfSensors, SensorID1, Value1, SensorID2, Value2, ...]
+ * Example: [2, 30, 25, 20, 1500] = 2 sensors: Sensor 30 = 25°C, Sensor 20 = 1500 lx
+ *
+ * Note: Flutter handles byte conversion, so values come pre-converted from hardware
  */
 
 import { formatSensorValue, formatVariable, getAllSensorIds, SENSOR_META } from './sensorMetadata.js';
 
 /**
- * Parse a binary sensor data packet
- * @param {Uint8Array|Buffer} buffer - Binary data buffer
+ * Parse a sensor data packet from Flutter
+ * Flutter handles byte conversion, so we receive decoded values directly
+ * @param {Array} data - Array format: [NumOfSensors, SensorID1, Value1, SensorID2, Value2, ...]
  * @returns {object[]} Array of parsed sensor readings: [{sensorId, value, formatted}, ...]
+ *
+ * Example: parseSensorPacket([2, 30, 25, 20, 1500])
+ *   -> Sensor 30: 25°C (Amb. Temperature)
+ *   -> Sensor 20: 1500 lx (Light)
  */
-function parseSensorPacket(buffer) {
-  if (!buffer || buffer.length < 1) {
-    console.warn('parseSensorPacket: Empty or invalid buffer');
+function parseSensorPacket(data) {
+  if (!data || !Array.isArray(data) || data.length < 1) {
+    console.warn('parseSensorPacket: Invalid data format. Expected array [count, id1, val1, ...]');
     return [];
   }
 
   const readings = [];
 
   try {
-    const count = buffer[0];
-    let offset = 1;
+    const count = data[0];
 
-    // Validate packet structure
-    const expectedLength = 1 + (count * 3); // 1 byte count + (3 bytes per sensor: 1 ID + 2 value)
-    if (buffer.length < expectedLength) {
-      console.warn(`parseSensorPacket: Incomplete packet. Expected ${expectedLength} bytes, got ${buffer.length}`);
+    // Validate packet structure: 1 count + (2 values per sensor: ID + value)
+    const expectedLength = 1 + (count * 2);
+    if (data.length < expectedLength) {
+      console.warn(`parseSensorPacket: Incomplete packet. Expected ${expectedLength} values, got ${data.length}`);
       return readings;
     }
 
     // Parse each sensor in the packet
+    let offset = 1;
     for (let i = 0; i < count; i++) {
-      const sensorId = buffer[offset];
-      const rawValue = (buffer[offset + 1] << 8) | buffer[offset + 2];
+      const sensorId = data[offset];
+      const rawValue = data[offset + 1];
 
       // Format the value according to sensor specification
       const formatted = formatSensorValue(sensorId, rawValue);
@@ -52,12 +60,12 @@ function parseSensorPacket(buffer) {
         decimals: formatted.decimals
       });
 
-      offset += 3;
+      offset += 2; // Move to next sensor (ID + value)
     }
 
     return readings;
   } catch (error) {
-    console.error('parseSensorPacket: Error parsing buffer', error);
+    console.error('parseSensorPacket: Error parsing data', error);
     return [];
   }
 }
@@ -65,31 +73,30 @@ function parseSensorPacket(buffer) {
 /**
  * Create a test packet for development/testing
  * @param {object[]} sensors - Array of {sensorId, value} objects
- * @returns {Uint8Array} Binary packet data
+ * @returns {Array} Packet data in Flutter format: [count, id1, val1, id2, val2, ...]
+ *
+ * Example: createTestPacket([{sensorId: 30, value: 25}, {sensorId: 20, value: 1500}])
+ *   -> [2, 30, 25, 20, 1500]
  */
 function createTestPacket(sensors) {
-  const buffer = new Uint8Array(1 + (sensors.length * 3));
-  buffer[0] = sensors.length;
+  const packet = [sensors.length];
 
-  let offset = 1;
   for (const sensor of sensors) {
-    buffer[offset] = sensor.sensorId;
-    buffer[offset + 1] = (sensor.value >> 8) & 0xFF;
-    buffer[offset + 2] = sensor.value & 0xFF;
-    offset += 3;
+    packet.push(sensor.sensorId);
+    packet.push(sensor.value);
   }
 
-  return buffer;
+  return packet;
 }
 
 /**
  * Handle incoming sensor data stream
- * This function should be called whenever new binary data arrives (2 Hz)
- * @param {Uint8Array|Buffer} buffer - Binary data from hardware
+ * This function should be called whenever new sensor data arrives from Flutter
+ * @param {Array} data - Sensor data array: [count, id1, val1, id2, val2, ...]
  * @param {function} updateCallback - Callback(sensorId, value, formatted) for each sensor reading
  */
-function handleSensorStream(buffer, updateCallback) {
-  const readings = parseSensorPacket(buffer);
+function handleSensorStream(data, updateCallback) {
+  const readings = parseSensorPacket(data);
 
   for (const reading of readings) {
     if (typeof updateCallback === 'function') {
@@ -113,14 +120,18 @@ function handleSensorStream(buffer, updateCallback) {
 
 /**
  * Initialize sensor data handler in window global
- * Sets up window.handleSensorPacket for runtime use
+ * Sets up window.handleSensorPacket for runtime use with Flutter
  */
 function initializeSensorDataHandler() {
   window.sensorValues = {};
 
-  // Main function to handle incoming packets
-  window.handleSensorPacket = function(buffer) {
-    return handleSensorStream(buffer, (sensorId, value, formatted) => {
+  /**
+   * Main function to handle incoming packets from Flutter
+   * @param {Array} data - Format: [numSensors, sensorId1, value1, sensorId2, value2, ...]
+   * Example: window.handleSensorPacket([2, 30, 25, 20, 1500])
+   */
+  window.handleSensorPacket = function(data) {
+    return handleSensorStream(data, () => {
       // Update displays that reference this sensor
       if (typeof window.updateDisplaySlot === 'function' && window.slotManager) {
         // Find display blocks that reference this sensor and update them

@@ -199,9 +199,9 @@ function formatSensorValue(sensorId, rawValue) {
     };
   }
 
-  // Scale raw value by sensor scale factor (e.g., 253 / 10 = 25.3 for temp)
-  const scaleFactor = meta.scale || 1;
-  const num = Number(rawValue) / scaleFactor;
+  // Flutter sends pre-converted values, so we use them directly
+  // No need to divide by scale factor - that's done in Flutter
+  const num = Number(rawValue);
   const formatted = num.toFixed(meta.decimals);
   const value = parseFloat(formatted);
 
