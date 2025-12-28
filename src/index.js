@@ -48,6 +48,10 @@ import { initSaveLoad } from './logic/save_load.js';
 
 import { converters } from './conversion/index.js';
 
+// Single source of truth for active Blockly model
+window.activeModel = 'default';
+
+
 // Initialize sensor data handler (supports binary stream parsing and sensor value management)
 // This sets up window.handleSensorPacket() for Flutter to call with binary sensor data
 // It also initializes window.sensorValues = {} to store converted sensor readings
@@ -117,7 +121,7 @@ window.pause = (ms) => new Promise((resolve) => {
   window.activeTimers.push(id);
 });
 
-
+/*
 function getModelFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('model') || 'default';
@@ -126,7 +130,7 @@ const currentModel = getModelFromURL();
 console.log('Selected model:', currentModel);
 
 const toolbox = getToolboxForModel(currentModel);
-
+*/
 
 // Expose run/stop functions globally for Flutter integration
 window.runWorkspace = function() {
@@ -205,7 +209,8 @@ const grid = {
 
 //window.addEventListener('DOMContentLoaded', () => {
   const workspace = Blockly.inject('blocklyDiv', { //workspace =
-    toolbox: toolbox,
+    //toolbox: toolbox,
+      toolbox: getToolboxForModel(window.activeModel),
     theme: MyOwnDarkTheme,
     renderer: 'zelos',
     zoom: zoom,
@@ -226,7 +231,7 @@ const grid = {
   //window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
 
 
-  // 1. Оборачиваем  в setTimeout или ставим после inject’а, чтобы Blockly успел полностью загрузиться.
+  // 1. Оборачиваем  в setTimeout или ставим после inject'а, чтобы Blockly успел полностью загрузиться.
   //setTimeout(() => {
   // 2. Берём тулбокс через API:
   //const toolbox = workspace.getToolbox();
@@ -296,51 +301,51 @@ function waitForToolboxReady(maxRetries = 30) {
  */
 window.setModel = async function setModel(modelName, clearWorkspace = true) {
   try {
-    // ---- 1. Wait for workspace to exist (bounded) ----
+    // Single source of truth
+    window.activeModel = modelName;
+
+    // ---- 1. Wait for workspace to exist ----
     let retries = 30;
-    while ((!window.workspace || window.workspace.isDisposed()) && retries-- > 0) {
+    while ((!window.workspace || window.workspace.disposed) && retries-- > 0) {
       await new Promise(r => requestAnimationFrame(r));
     }
 
-    if (!window.workspace || window.workspace.isDisposed()) {
+    if (!window.workspace || window.workspace.disposed) {
       console.error('[setModel] Workspace not ready');
       return false;
     }
 
-    // ---- 2. Capture old toolbox reference ----
-    const oldToolbox = window.workspace.getToolbox();
-
-    // ---- 3. Clear workspace BEFORE toolbox update ----
+    // ---- 2. Clear workspace BEFORE toolbox update ----
     if (clearWorkspace) {
       window.workspace.clear();
     }
 
-    // ---- 4. Update toolbox (async internal rebuild) ----
-    const newToolboxDef = getToolboxForModel(modelName);
-    window.workspace.updateToolbox(newToolboxDef);
+    // ---- 3. Update toolbox (mutates existing toolbox) ----
+    window.workspace.updateToolbox(
+      getToolboxForModel(modelName)
+    );
 
-    // ---- 5. Wait for NEW toolbox to be attached & populated ----
-    retries = 30;
+    // ---- 4. Wait until toolbox has categories ----
     let toolbox = null;
+    retries = 30;
 
     while (retries-- > 0) {
       toolbox = window.workspace.getToolbox();
       const items = toolbox?.getToolboxItems?.();
 
-      // Toolbox must be new AND have items
-      if (toolbox && toolbox !== oldToolbox && items && items.length > 0) {
+      if (toolbox && items && items.length > 0) {
         break;
       }
 
       await new Promise(r => requestAnimationFrame(r));
     }
 
-    if (!toolbox || toolbox === oldToolbox) {
-      console.error('[setModel] Toolbox failed to update');
+    if (!toolbox) {
+      console.error('[setModel] Toolbox not available');
       return false;
     }
 
-    // ---- 6. Select default category safely ----
+    // ---- 5. Select first category safely ----
     const categories = toolbox.getToolboxItems();
     if (categories && categories.length > 0) {
       toolbox.setSelectedItem(categories[0]);
@@ -354,6 +359,7 @@ window.setModel = async function setModel(modelName, clearWorkspace = true) {
     return false;
   }
 };
+
 
 
 
