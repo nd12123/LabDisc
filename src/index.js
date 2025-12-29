@@ -51,6 +51,9 @@ import { converters } from './conversion/index.js';
 // Single source of truth for active Blockly model
 window.activeModel = 'default';
 
+const IS_IPAD =
+  /iPad|Macintosh/.test(navigator.userAgent) &&
+  navigator.maxTouchPoints > 1;
 
 // Initialize sensor data handler (supports binary stream parsing and sensor value management)
 // This sets up window.handleSensorPacket() for Flutter to call with binary sensor data
@@ -107,6 +110,25 @@ function runCode(code) {
   }
 }
 window.activeTimers = [];
+
+
+window.modalOpen = function modalOpen(payload) {
+  // OLD behavior (Blockly Field)
+  if (payload && typeof payload.getText === 'function') {
+    const value = payload.getText();
+    window.valueBefore = value;
+    return value;
+  }
+
+  // NEW behavior (dialog override)
+  if (payload && payload.type) {
+    console.log('[modalOpen]', payload);
+    // Flutter should handle this
+    return null;
+  }
+
+  return null;
+};
 
 function stopCode() {
   window.isRunning = false;
@@ -171,7 +193,17 @@ document.getElementById("zoomResetBtn").addEventListener("click", () => {
 // Trash/Delete All controls
 document.getElementById("trashBtn").addEventListener("click", () => {
   const workspace = Blockly.getMainWorkspace();
-  if (workspace && confirm('Delete all blocks? This cannot be undone.')) {
+  if (!workspace) return;
+
+  if (IS_IPAD && window.modalOpen) {
+    window.modalOpen({
+      type: 'confirm',
+      message: 'Delete all blocks? This cannot be undone.'
+    });
+    return;
+  }
+
+  if (confirm('Delete all blocks? This cannot be undone.')) {
     workspace.clear();
   }
 });
@@ -195,6 +227,55 @@ window.playBeep = function (volume = 0.5, duration = 500) {
 Blockly.setLocale(En);
 
 Blockly.fieldRegistry.register('field_colour', FieldColour);
+
+
+if (IS_IPAD && window.modalOpen) {
+
+  console.log('[Blockly] iPad detected — overriding dialogs');
+
+  Blockly.dialog.setPrompt(function (message, defaultValue, callback) {
+    try {
+      // Delegate to Flutter-controlled modal
+      const result = window.modalOpen({
+        type: 'prompt',
+        message,
+        defaultValue
+      });
+
+      // Flutter should later call back with result
+      callback(result ?? defaultValue);
+
+    } catch (e) {
+      console.error('[Blockly] prompt failed', e);
+      callback(defaultValue);
+    }
+  });
+
+  Blockly.dialog.setAlert(function (message, callback) {
+    try {
+      window.modalOpen({
+        type: 'alert',
+        message
+      });
+    } finally {
+      callback();
+    }
+  });
+
+  Blockly.dialog.setConfirm(function (message, callback) {
+    try {
+      const result = window.modalOpen({
+        type: 'confirm',
+        message
+      });
+      callback(!!result);
+    } catch (e) {
+      console.error('[Blockly] confirm failed', e);
+      callback(false);
+    }
+  });
+
+}
 
 
 
@@ -303,6 +384,12 @@ function waitForToolboxReady(maxRetries = 30) {
  */
 window.setModel = async function setModel(modelName, clearWorkspace = true) {
   try {
+    // ---- 0. Check if model is already active - do nothing if unchanged ----
+    if (window.activeModel === modelName) {
+      console.log('[setModel] Model already active:', modelName);
+      return true; // Success - no action needed
+    }
+
     // Single source of truth
     window.activeModel = modelName;
 
@@ -361,9 +448,6 @@ window.setModel = async function setModel(modelName, clearWorkspace = true) {
     return false;
   }
 };
-
-
-
 
 /*
 let pollingId = null;

@@ -104,16 +104,31 @@ const workspaceJson = Blockly.serialization.workspaces.save(window.workspace, { 
    * @returns {Object} Workspace JSON object
    */
   window.saveWorkspace = function() {
-    return Blockly.serialization.workspaces.save(window.workspace, { serializeComments: false });
-  };
+  const data = Blockly.serialization.workspaces.save(
+    window.workspace,
+    { serializeComments: false }
+  );
+
+  // iOS / iPad fix: never return raw objects across bridge
+  if (Blockly.utils.userAgent.IPAD || Blockly.utils.userAgent.IOS) {
+    return JSON.stringify(data);
+  }
+
+  return data;
+};
+
 
   /**
    * Loads workspace from JSON object (for Flutter)
    * @param {!Object} json — JS-объект с данными workspace
    */
-  window.loadWorkspace = function(json) {
-    loadWorkspaceFromFile(json);
-  };
+ window.loadWorkspace = function(json) {
+  if (typeof json === 'string') {
+    json = JSON.parse(json);
+  }
+  loadWorkspaceFromFile(json);
+};
+
 
   /**
    * Saves workspace and triggers browser download as project.json file
