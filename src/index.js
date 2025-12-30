@@ -112,6 +112,22 @@ function runCode(code) {
 window.activeTimers = [];
 
 
+// Force Blockly to use native browser dialogs
+Blockly.dialog.setAlert((message, callback) => {
+  alert(message);
+  callback();
+});
+
+Blockly.dialog.setConfirm((message, callback) => {
+  callback(confirm(message));
+});
+
+Blockly.dialog.setPrompt((message, defaultValue, callback) => {
+  callback(prompt(message, defaultValue));
+});
+
+
+
 window.modalOpen = function modalOpen(payload) {
   // OLD behavior (Blockly Field)
   if (payload && typeof payload.getText === 'function') {
@@ -194,7 +210,7 @@ document.getElementById("zoomResetBtn").addEventListener("click", () => {
 document.getElementById("trashBtn").addEventListener("click", () => {
   const workspace = Blockly.getMainWorkspace();
   if (!workspace) return;
-
+/*
   if (IS_IPAD && window.modalOpen) {
     window.modalOpen({
       type: 'confirm',
@@ -202,7 +218,7 @@ document.getElementById("trashBtn").addEventListener("click", () => {
     });
     return;
   }
-
+*/
   if (confirm('Delete all blocks? This cannot be undone.')) {
     workspace.clear();
   }
@@ -227,56 +243,6 @@ window.playBeep = function (volume = 0.5, duration = 500) {
 Blockly.setLocale(En);
 
 Blockly.fieldRegistry.register('field_colour', FieldColour);
-
-
-if (IS_IPAD && window.modalOpen) {
-
-  console.log('[Blockly] iPad detected — overriding dialogs');
-
-  Blockly.dialog.setPrompt(function (message, defaultValue, callback) {
-    try {
-      // Delegate to Flutter-controlled modal
-      const result = window.modalOpen({
-        type: 'prompt',
-        message,
-        defaultValue
-      });
-
-      // Flutter should later call back with result
-      callback(result ?? defaultValue);
-
-    } catch (e) {
-      console.error('[Blockly] prompt failed', e);
-      callback(defaultValue);
-    }
-  });
-
-  Blockly.dialog.setAlert(function (message, callback) {
-    try {
-      window.modalOpen({
-        type: 'alert',
-        message
-      });
-    } finally {
-      callback();
-    }
-  });
-
-  Blockly.dialog.setConfirm(function (message, callback) {
-    try {
-      const result = window.modalOpen({
-        type: 'confirm',
-        message
-      });
-      callback(!!result);
-    } catch (e) {
-      console.error('[Blockly] confirm failed', e);
-      callback(false);
-    }
-  });
-
-}
-
 
 
 const movements = {scrollbars: { horizontal: true, vertical: true},drag: true,wheel: true};
