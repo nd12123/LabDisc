@@ -196,6 +196,7 @@ window.finishBlocklyVariable = function (name) {
 
 
 
+
 /*
 if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'function') {
   Blockly.Variables.promptName = function (
