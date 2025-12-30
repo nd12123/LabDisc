@@ -112,22 +112,6 @@ function runCode(code) {
 window.activeTimers = [];
 
 
-// Force Blockly to use native browser dialogs
-Blockly.dialog.setAlert((message, callback) => {
-  alert(message);
-  callback();
-});
-
-Blockly.dialog.setConfirm((message, callback) => {
-  callback(confirm(message));
-});
-
-Blockly.dialog.setPrompt((message, defaultValue, callback) => {
-  callback(prompt(message, defaultValue));
-});
-
-
-
 window.modalOpen = function modalOpen(payload) {
   // OLD behavior (Blockly Field)
   if (payload && typeof payload.getText === 'function') {
@@ -219,10 +203,20 @@ document.getElementById("trashBtn").addEventListener("click", () => {
     return;
   }
 */
-  if (confirm('Delete all blocks? This cannot be undone.')) {
+  //if (confirm('Delete all blocks? This cannot be undone.')) {
+    //workspace.clear();
+  //}
+    alert('Delete all blocks? This cannot be undone.');
+
+});
+
+window.clearWorkspace = function () {
+  const workspace = Blockly.getMainWorkspace();
+  if (workspace) {
     workspace.clear();
   }
-});
+};
+
 
 window.playBeep = function (volume = 0.5, duration = 500) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -265,6 +259,7 @@ const grid = {
     grid: grid,
     trashcan: false, // Disabled - using custom toolbar button instead
     readOnly: false,
+    modalInputs: !IS_IPAD,
     //renderer:'zelos', readOnly: false,
     media: 'media/'//'./media' //media from blockly? // ./blockly/media
   });
@@ -277,7 +272,7 @@ const grid = {
   window.workspace = Blockly.getMainWorkspace(); // tweaking with the workspace
   //window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
 
-window.blocklyReady = true;
+  window.blocklyReady = true;
 
 
   // 1. Оборачиваем  в setTimeout или ставим после inject'а, чтобы Blockly успел полностью загрузиться.
