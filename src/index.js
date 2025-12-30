@@ -111,6 +111,36 @@ function runCode(code) {
 }
 window.activeTimers = [];
 
+window.createBlocklyVariable = function (name) {
+  if (!name) return;
+
+  const workspace = Blockly.getMainWorkspace();
+  if (!workspace) return;
+
+  // Avoid duplicates
+  const existing = workspace.getVariable(name);
+  if (existing) return;
+
+  workspace.createVariable(name);
+};
+
+if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'function') {
+  Blockly.Variables.promptName = function (
+    workspace,
+    promptText,
+    defaultName,
+    callback
+  ) {
+    // Show alert instead of prompt
+    window.alert(promptText);
+
+    // IMPORTANT:
+    // Do NOT call callback here.
+    // Variable creation will happen via Flutter → createBlocklyVariable()
+  };
+}
+
+/*
 if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'function') {
   Blockly.Variables.promptName = function (
     workspace,
@@ -126,7 +156,7 @@ if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'fun
       callback(null);
     }
   };
-}
+} */
 
 /*
 if (IS_IPAD) {
