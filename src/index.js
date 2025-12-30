@@ -112,6 +112,32 @@ function runCode(code) {
 window.activeTimers = [];
 
 
+if (IS_IPAD) {
+  // Force Blockly variable dialogs to use native prompt
+  Blockly.dialog.setPrompt((message, defaultValue, callback) => {
+    try {
+      const result = window.prompt(message, defaultValue);
+      callback(result);
+    } catch (e) {
+      console.error('[Blockly.prompt override failed]', e);
+      callback(null);
+    }
+  });
+}
+if (IS_IPAD) {
+  Blockly.dialog.setConfirm((message, callback) => {
+    const result = window.confirm(message);
+    callback(result);
+  });
+
+  Blockly.dialog.setAlert((message, callback) => {
+    window.alert(message);
+    callback();
+  });
+}
+
+
+/*
 window.modalOpen = function modalOpen(payload) {
   // OLD behavior (Blockly Field)
   if (payload && typeof payload.getText === 'function') {
@@ -129,6 +155,7 @@ window.modalOpen = function modalOpen(payload) {
 
   return null;
 };
+*/
 
 function stopCode() {
   window.isRunning = false;
@@ -194,21 +221,25 @@ document.getElementById("zoomResetBtn").addEventListener("click", () => {
 document.getElementById("trashBtn").addEventListener("click", () => {
   const workspace = Blockly.getMainWorkspace();
   if (!workspace) return;
-/*
-  if (IS_IPAD && window.modalOpen) {
-    window.modalOpen({
-      type: 'confirm',
-      message: 'Delete all blocks? This cannot be undone.'
-    });
+
+  // iPad / iOS path → Flutter intercepts alert/confirm
+  if (IS_IPAD) {
+    // Use confirm so Flutter can decide
+    const result = window.alert( //should be confirm?
+      'Delete all blocks? This cannot be undone.'
+    );
+    //if (result) {
+      //workspace.clear();
+    //}
     return;
   }
-*/
-  //if (confirm('Delete all blocks? This cannot be undone.')) {
-    //workspace.clear();
-  //}
-    alert('Delete all blocks? This cannot be undone.');
 
+  // Desktop / everything else → original behavior
+  if (confirm('Delete all blocks? This cannot be undone.')) {
+    workspace.clear();
+  }
 });
+
 
 window.clearWorkspace = function () {
   const workspace = Blockly.getMainWorkspace();
