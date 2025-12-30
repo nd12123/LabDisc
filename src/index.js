@@ -111,19 +111,24 @@ function runCode(code) {
 }
 window.activeTimers = [];
 
-
-if (IS_IPAD) {
-  // Force Blockly variable dialogs to use native prompt
-  Blockly.dialog.setPrompt((message, defaultValue, callback) => {
+if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'function') {
+  Blockly.Variables.promptName = function (
+    workspace,
+    promptText,
+    defaultName,
+    callback
+  ) {
     try {
-      const result = window.prompt(message, defaultValue);
-      callback(result);
+      const name = window.prompt(promptText, defaultName);
+      callback(name);
     } catch (e) {
-      console.error('[Blockly.prompt override failed]', e);
+      console.error('[Variables.promptName override failed]', e);
       callback(null);
     }
-  });
+  };
 }
+
+/*
 if (IS_IPAD) {
   Blockly.dialog.setConfirm((message, callback) => {
     const result = window.confirm(message);
@@ -135,7 +140,7 @@ if (IS_IPAD) {
     callback();
   });
 }
-
+*/
 
 /*
 window.modalOpen = function modalOpen(payload) {
