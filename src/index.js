@@ -55,6 +55,10 @@ const IS_IPAD =
   /iPad|Macintosh/.test(navigator.userAgent) &&
   navigator.maxTouchPoints > 1;
 
+window.__blocklyVarCallback = null;
+window.__blocklyVarRetry = false;
+
+
 // Initialize sensor data handler (supports binary stream parsing and sensor value management)
 // This sets up window.handleSensorPacket() for Flutter to call with binary sensor data
 // It also initializes window.sensorValues = {} to store converted sensor readings
@@ -111,6 +115,8 @@ function runCode(code) {
 }
 window.activeTimers = [];
 
+
+/*
 window.createBlocklyVariable = function (name) {
   if (!name) return;
 
@@ -123,7 +129,7 @@ window.createBlocklyVariable = function (name) {
 
   workspace.createVariable(name);
 };
-
+*/
 if (IS_IPAD && Blockly?.Variables?.promptName) {
   Blockly.Variables.promptName = function (
     workspace,
@@ -131,35 +137,63 @@ if (IS_IPAD && Blockly?.Variables?.promptName) {
     defaultName,
     callback
   ) {
-    // Store callback globally so Flutter can finish the flow
     window.__blocklyVarCallback = callback;
-    window.__blocklyVarWorkspace = workspace;
 
-    // Signal Flutter (same pattern as delete)
     window.alert(
       '__BLOCKLY_VARIABLE__:' +
       JSON.stringify({
         prompt: promptText,
-        defaultName: defaultName || ''
+        defaultName,
+        retry: window.__blocklyVarRetry
       })
     );
+
+    // IMPORTANT:
+    // retry flag is reset ONLY after prompt is sent
+    window.__blocklyVarRetry = false;
   };
 }
 
-window.finishBlocklyVariable = function(name) {
-  if (!window.__blocklyVarCallback) return;
+if (IS_IPAD) {
+  Blockly.dialog.setAlert((message, callback) => {
+    if (message.toLowerCase().includes('already exists')) {
+      // Tell Flutter this is a retry
+      window.__blocklyVarRetry = true;
 
-  // Empty or cancelled
+      // Let Blockly continue its internal flow
+      callback();
+      return;
+    }
+
+    // Any other alert → forward to Flutter
+    try {
+      window.alert(message);
+    } finally {
+      callback();
+    }
+  });
+}
+
+
+
+window.finishBlocklyVariable = function (name) {
+  const cb = window.__blocklyVarCallback;
+  window.__blocklyVarCallback = null;
+
+  if (!cb) return;
+
+  // User cancelled → stop everything
   if (!name) {
-    window.__blocklyVarCallback(null);
-  } else {
-    window.__blocklyVarCallback(name);
+    window.__blocklyVarRetry = false;
+    cb(null);
+    return;
   }
 
-  // Cleanup
-  window.__blocklyVarCallback = null;
-  window.__blocklyVarWorkspace = null;
+  // Let Blockly validate (duplicate check happens here)
+  cb(name);
 };
+
+
 
 
 /*
