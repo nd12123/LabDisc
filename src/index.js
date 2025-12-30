@@ -124,21 +124,43 @@ window.createBlocklyVariable = function (name) {
   workspace.createVariable(name);
 };
 
-if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'function') {
+if (IS_IPAD && Blockly?.Variables?.promptName) {
   Blockly.Variables.promptName = function (
     workspace,
     promptText,
     defaultName,
     callback
   ) {
-    // Show alert instead of prompt
-    window.alert(promptText);
+    // Store callback globally so Flutter can finish the flow
+    window.__blocklyVarCallback = callback;
+    window.__blocklyVarWorkspace = workspace;
 
-    // IMPORTANT:
-    // Do NOT call callback here.
-    // Variable creation will happen via Flutter → createBlocklyVariable()
+    // Signal Flutter (same pattern as delete)
+    window.alert(
+      '__BLOCKLY_VARIABLE__:' +
+      JSON.stringify({
+        prompt: promptText,
+        defaultName: defaultName || ''
+      })
+    );
   };
 }
+
+window.finishBlocklyVariable = function(name) {
+  if (!window.__blocklyVarCallback) return;
+
+  // Empty or cancelled
+  if (!name) {
+    window.__blocklyVarCallback(null);
+  } else {
+    window.__blocklyVarCallback(name);
+  }
+
+  // Cleanup
+  window.__blocklyVarCallback = null;
+  window.__blocklyVarWorkspace = null;
+};
+
 
 /*
 if (IS_IPAD && Blockly.Variables && typeof Blockly.Variables.promptName === 'function') {
