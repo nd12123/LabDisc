@@ -362,6 +362,124 @@ window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
 
 window.blocklyReady = true;
 
+// ------------------------------------------------------------------
+// POSTMESSAGE HANDLER FOR FLUTTER WEB INTEGRATION
+// ------------------------------------------------------------------
+
+/**
+ * Handles postMessage requests from Flutter parent window
+ * Supports: getCode, getWorkspace, getAstJson, loadCode
+ */
+window.addEventListener("message", function (event) {
+  // Only accept messages from parent window (Flutter)
+  // In production, you might want to check event.origin for security
+  if (event.source !== window.parent) {
+    return;
+  }
+
+  const payload = event.data;
+  if (!payload || typeof payload !== "object") {
+    return;
+  }
+
+  const action = payload.action;
+  if (!action) {
+    return;
+  }
+
+  try {
+    switch (action) {
+      case "getCode": {
+        const code = javascriptGenerator.workspaceToCode(workspace);
+        window.parent.postMessage(
+          {
+            type: "codeChanged",
+            code: code,
+          },
+          "*"
+        );
+        break;
+      }
+
+      case "getWorkspace": {
+        const workspaceJson = saveWorkspaceToFile();
+        window.parent.postMessage(
+          {
+            type: "workspaceData",
+            data: JSON.stringify(workspaceJson),
+          },
+          "*"
+        );
+        break;
+      }
+
+      case "getAstJson": {
+        const astJson = window.getAstJson();
+        if (astJson) {
+          // getAstJson returns an object, stringify it for transmission
+          window.parent.postMessage(
+            {
+              type: "astJson",
+              data: JSON.stringify(astJson),
+            },
+            "*"
+          );
+        } else {
+          window.parent.postMessage(
+            {
+              type: "astJson",
+              data: "{}",
+            },
+            "*"
+          );
+        }
+        break;
+      }
+
+      case "loadCode": {
+        if (payload.code) {
+          let jsonData;
+          if (typeof payload.code === "string") {
+            jsonData = JSON.parse(payload.code);
+          } else {
+            jsonData = payload.code;
+          }
+          loadWorkspaceFromFile(jsonData);
+        }
+        break;
+      }
+
+      case "setModel": {
+        window.setModel(payload.code);
+        break;
+      }
+
+      default:
+        console.warn("Unknown postMessage action:", action);
+    }
+  } catch (error) {
+    console.error("Error handling postMessage action:", action, error);
+    // Send error response if possible
+    if (action === "getAstJson") {
+      window.parent.postMessage(
+        {
+          type: "astJson",
+          data: "{}",
+        },
+        "*"
+      );
+    }
+  }
+});
+
+// Send initial ready notification
+window.parent.postMessage(
+  {
+    type: "ready",
+  },
+  "*"
+);
+
 // 1. Оборачиваем  в setTimeout или ставим после inject'а, чтобы Blockly успел полностью загрузиться.
 setTimeout(() => {
   // 2. Берём тулбокс через API:
