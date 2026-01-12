@@ -282,17 +282,41 @@ Blockly.Blocks["bar"] = {
   init: function () {
     this.jsonInit({
       type: "bar", //horizontal_bar?
-      message0: "bar color %1 in %2 steps on %3", //from %1 to %2
+      message0: "bar from %1 to %2",
+      message1: "of variable %1",
+      message2: "in %1 steps",
+      message3: "with color %1 on %2",
       args0: [
         {
-          type: "field_colour",
-          name: "COLOR",
+          type: "field_number",
+          name: "MIN",
+          value: 0,
         },
+        {
+          type: "field_number",
+          name: "MAX",
+          value: 100,
+        },
+      ],
+      args1: [
+        {
+          type: "input_value",
+          name: "var",
+          check: "Number",
+        },
+      ],
+      args2: [
         {
           type: "field_number",
           name: "STEPS",
           value: 10,
           min: 1,
+        },
+      ],
+      args3: [
+        {
+          type: "field_colour",
+          name: "COLOR",
         },
         {
           type: "field_dropdown",
@@ -323,8 +347,8 @@ Blockly.Blocks["horizontal_bar"] = {
       type: "horizontal_bar",
       message0: "display bar of %1",
       message1: "from %1 to %2",
-      message2: "color %1",
-      message3: "in %1 steps on %2",
+      message2: "in %1 steps",
+      message3: "with color %1 on %2",
       args0: [
         {
           type: "field_dropdown",
@@ -388,16 +412,16 @@ Blockly.Blocks["horizontal_bar"] = {
       ],
       args2: [
         {
-          type: "field_colour",
-          name: "COLOR",
-        },
-      ],
-      args3: [
-        {
           type: "field_number",
           name: "STEPS",
           value: 10,
           min: 1,
+        },
+      ],
+      args3: [
+        {
+          type: "field_colour",
+          name: "COLOR",
         },
         {
           type: "field_dropdown",

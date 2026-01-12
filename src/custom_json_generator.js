@@ -433,9 +433,15 @@ function blockToStatement(block) {
     }
     case "bar": {
       // Map extra styling onto available fields; steps retained as property.
+      const min = ensureNumber(block.fields?.MIN, 0);
+      const max = ensureNumber(block.fields?.MAX, 100);
+      const value = inputExpr(block, "var", DEFAULT_LITERAL_ZERO);
       return {
         runtimeType: "displayNode",
         displayType: "bar",
+        min,
+        max,
+        value,
         color: block.fields?.COLOR || "#00ff00",
         steps: ensureNumber(block.fields?.STEPS, 10),
         position: block.fields?.POSITION || "center",
