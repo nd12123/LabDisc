@@ -1,241 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Blockly + Webpack</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Blockly + Webpack</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-      color: #222;
-      scroll-behavior: smooth;
-    }
-
-    /* Global font unification */
-    button, input, select, textarea, label, a {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 14px;
-    }
-
-    button {
-      font-weight: 600;
-      cursor: pointer;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      background: #4A90E2;
-      color: white;
-      transition: all 0.2s ease;
-    }
-
-    button:hover {
-      background: #357ABD;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    #root {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      width: 100%;
-    }
-
-    .toolbar {
-      padding: 12px;
-      background: #FFF9F3;
-      border-bottom: 1px solid #ddd;
-      flex-shrink: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .toolbar button {
-      font-size: 13px;
-      padding: 8px 14px;
-    }
-
-    .toolbar-spacer {
-      flex: 1;
-    }
-
-    .toolbar-left {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .toolbar-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    /* Hide Blockly's default trash and zoom controls */
-    .blocklyTrash {
-      display: none !important;
-    }
-
-    .blocklyZoom {
-      display: none !important;
-    }
-
-    .main-container {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      overflow: hidden;
-      flex-direction: column;
-    }
-
-    .workspace-container {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    #blocklyDiv {
-      flex: 1;
-      overflow: hidden;
-      min-width: 400px;
-    }
-
-    #blocklyDiv svg {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-    }
-
-    #outputPanel {
-      width: 360px;
-      height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-      flex-shrink: 0;
-      border-left: 1px solid #e0e0e0;
-      background: white;
-      scroll-behavior: smooth;
-    }
-
-    /* Blockly custom font injection */
-    .blocklyText {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-    }
-
-    .blocklyTreeLabel {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-      font-weight: 700;
-    }
-
-    /* Reduce spacing between blocks for better density */
-    .blocklyBlockCanvas .blocklyBlock {
-      margin: 0 !important;
-    }
-
-    .blocklyBlockCanvas {
-      margin: 0 !important;
-    }
-
-    /* Minimize connection spacing */
-    .blocklyInsertionMarker {
-      display: none !important;
-    }
-
-    /* Ensure no horizontal overflow on any screen */
-    @media (max-width: 1024px) {
-      #outputPanel {
-        width: 40%;
-        min-width: 280px;
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      #blocklyDiv {
-        min-width: 300px;
-      }
-
-      .toolbar {
-        flex-wrap: wrap;
-      }
-    }
-
-    @media (max-width: 768px) {
-      #outputPanel {
-        width: 50%;
-        min-width: 250px;
-      }
-
-      .toolbar-left {
-        gap: 6px;
-      }
-
-      .toolbar-left button {
-        font-size: 12px;
-        padding: 7px 10px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      #outputPanel {
+      html,
+      body {
+        height: 100%;
         width: 100%;
-        height: 50%;
-        border-left: none;
-        border-top: 1px solid #e0e0e0;
+        margin: 0;
+        padding: 0;
+        font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        font-size: 14px;
+        color: #222;
+        scroll-behavior: smooth;
       }
 
-      .workspace-container {
+      /* Global font unification */
+      button,
+      input,
+      select,
+      textarea,
+      label,
+      a {
+        font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        font-size: 14px;
+      }
+
+      button {
+        font-weight: 600;
+        cursor: pointer;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        background: #4a90e2;
+        color: white;
+        transition: all 0.2s ease;
+      }
+
+      button:hover {
+        background: #357abd;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      #root {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+      }
+
+      .main-container {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
         flex-direction: column;
       }
 
+      .workspace-container {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
+      }
+
       #blocklyDiv {
-        min-width: 0;
-        height: 50%;
+        flex: 1;
+        overflow: hidden;
+        min-width: 400px;
       }
 
-      .toolbar {
-        gap: 6px;
+      #blocklyDiv svg {
+        font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif !important;
       }
 
-      .toolbar-left button {
-        font-size: 11px;
-        padding: 5px 8px;
+      #outputPanel {
+        width: 360px;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex-shrink: 0;
+        border-left: 1px solid #e0e0e0;
+        background: white;
+        scroll-behavior: smooth;
       }
-    }
-  </style>
-</head>
-<body>
-  <div id="root">
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <button id="zoomInBtn">🔍+ Zoom In</button>
-        <button id="zoomOutBtn">🔍- Zoom Out</button>
-        <button id="zoomResetBtn">↺ Zoom Reset</button>
-        <button id="trashBtn">🗑️ Delete All</button>
+
+      /* Blockly custom font injection */
+      .blocklyText {
+        font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif !important;
+      }
+
+      .blocklyTreeLabel {
+        font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif !important;
+        font-weight: 700;
+      }
+
+      /* Reduce spacing between blocks for better density */
+      .blocklyBlockCanvas .blocklyBlock {
+        margin: 0 !important;
+      }
+
+      .blocklyBlockCanvas {
+        margin: 0 !important;
+      }
+
+      /* Ensure no horizontal overflow on any screen */
+      @media (max-width: 1024px) {
+        #outputPanel {
+          width: 40%;
+          min-width: 280px;
+        }
+
+        #blocklyDiv {
+          min-width: 300px;
+        }
+
+        .toolbar {
+          flex-wrap: wrap;
+        }
+      }
+
+      @media (max-width: 768px) {
+        #outputPanel {
+          width: 50%;
+          min-width: 250px;
+        }
+
+        .toolbar-left {
+          gap: 6px;
+        }
+
+        .toolbar-left button {
+          font-size: 12px;
+          padding: 7px 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        #outputPanel {
+          width: 100%;
+          height: 50%;
+          border-left: none;
+          border-top: 1px solid #e0e0e0;
+        }
+
+        .workspace-container {
+          flex-direction: column;
+        }
+
+        #blocklyDiv {
+          min-width: 0;
+          height: 50%;
+        }
+
+        .toolbar {
+          gap: 6px;
+        }
+
+        .toolbar-left button {
+          font-size: 11px;
+          padding: 5px 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="main-container">
+        <div class="workspace-container">
+          <div id="blocklyDiv"></div>
+        </div>
       </div>
-      <input type="file" id="loadInput" accept=".json" style="display: none" />
     </div>
-    <div class="main-container">
-      <div class="workspace-container">
-        <div id="blocklyDiv"></div>
-        <div id="outputPanel"></div>
-      </div>
-    </div>
-  </div>
-</body>
+  </body>
 </html>
