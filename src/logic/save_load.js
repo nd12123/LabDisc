@@ -21,25 +21,8 @@ export function saveWorkspaceToFile() {
     window.workspace,
     { serializeComments: false }
   );
-  // 2. Преобразуем JS-объект в красивую JSON-строку
-  const jsonString = JSON.stringify(workspaceJson, null, 2);
-  console.log(workspaceJson);
-  // 3. Создаём Blob из строки и генерируем временный URL
-  const blob = new Blob([jsonString], {
-    type: "application/json;charset=utf-8",
-  });
-  const url = URL.createObjectURL(blob);
 
-  // 4. Создаём <a> и программно кликаем по ней, чтобы скачалось как файл
-  const downloadLink = document.createElement("a");
-  downloadLink.href = url;
-  downloadLink.download = "project.json";
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-
-  // 5. Чистим за собой: удаляем элемент и освобождаем URL
-  document.body.removeChild(downloadLink);
-  URL.revokeObjectURL(url);
+  return workspaceJson;
 }
 
 /**
@@ -56,7 +39,6 @@ export function loadWorkspaceFromFile(json) {
     Blockly.serialization.workspaces.load(json, window.workspace);
   } catch (e) {
     console.error("Error loading workspace JSON:", e);
-    alert("Не удалось загрузить проект: неверный формат JSON");
   }
 }
 
