@@ -70,8 +70,7 @@ function RightOutputPanel() {
             low={displayData.low}
             high={displayData.high}
             value={displayData.value}
-            color1={displayData.color1}
-            color2={displayData.color2}
+            color={displayData.color}
             steps={displayData.steps}
             label={displayData.label}
             unit={displayData.unit}

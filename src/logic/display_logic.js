@@ -9,18 +9,22 @@
 
 // Helper: Convert position string to slot index
 function positionToSlotIndex(position) {
-  switch(position) {
-    case 'top': return 0;
-    case 'center': return 1;
-    case 'bottom': return 2;
-    default: return null;
+  switch (position) {
+    case "top":
+      return 0;
+    case "center":
+      return 1;
+    case "bottom":
+      return 2;
+    default:
+      return null;
   }
 }
 
 // Helper: Get slot for a block and update the panel
 function updateSlot(blockId, displayData) {
   if (!window.slotManager) {
-    console.error('SlotManager not initialized');
+    console.error("SlotManager not initialized");
     return;
   }
 
@@ -29,7 +33,7 @@ function updateSlot(blockId, displayData) {
   const slotIndex = window.slotManager.getSlot(blockId, requestedSlot);
   window.slotManager.setSlotContent(slotIndex, displayData);
 
-  if (typeof window.updateDisplaySlot === 'function') {
+  if (typeof window.updateDisplaySlot === "function") {
     window.updateDisplaySlot(slotIndex, displayData);
   }
 }
@@ -39,7 +43,7 @@ window.clearScreen = function () {
   if (window.slotManager) {
     window.slotManager.reset();
   }
-  if (typeof window.clearOutputPanel === 'function') {
+  if (typeof window.clearOutputPanel === "function") {
     window.clearOutputPanel();
   }
 };
@@ -52,12 +56,12 @@ window.clearScreenSlot = function (screenPosition) {
   const slotIndex = positionToSlotIndex(screenPosition);
   if (slotIndex !== null && window.slotManager) {
     window.slotManager.clearSlot(slotIndex);
-    if (typeof window.updateDisplaySlot === 'function') {
+    if (typeof window.updateDisplaySlot === "function") {
       window.updateDisplaySlot(slotIndex, null);
     }
   }
 };
-  
+
 /**
  * NEW API: displayText - shows text with custom colors
  * @param {string} blockId - unique identifier for the block (used for slot allocation)
@@ -68,11 +72,11 @@ window.clearScreenSlot = function (screenPosition) {
  */
 window.displayText = function (blockId, text, textColor, bgColor, position) {
   const displayData = {
-    type: 'text',
-    text: String(text || ''),
-    color: textColor || '#000000',
-    bgColor: bgColor || '#ffffff',
-    position: position || 'center'
+    type: "text",
+    text: String(text || ""),
+    color: textColor || "#000000",
+    bgColor: bgColor || "#ffffff",
+    position: position || "center",
   };
   updateSlot(blockId, displayData);
 };
@@ -89,48 +93,66 @@ window.displayText = function (blockId, text, textColor, bgColor, position) {
  * @param {string} position - which screen to display on: 'top', 'center', or 'bottom'
  * @param {string} sensorId - sensor ID for live polling (optional, if provided, value is ignored)
  */
-window.displayVariable = function(blockId, value, label, unit, textColor, bgColor, position, sensorId) {
+window.displayVariable = function (
+  blockId,
+  value,
+  label,
+  unit,
+  textColor,
+  bgColor,
+  position,
+  sensorId
+) {
   const displayData = {
-    type: 'meter',
-    label: String(label || 'Value'),
+    type: "meter",
+    label: String(label || "Value"),
     value: Number(value) || 0,
-    unit: String(unit || ''),
-    color: textColor || '#0000ff',
-    bgColor: bgColor || '#ffffff',
-    position: position || 'center',
-    sensorId: sensorId // Store sensor ID for live polling
+    unit: String(unit || ""),
+    color: textColor || "#0000ff",
+    bgColor: bgColor || "#ffffff",
+    position: position || "center",
+    sensorId: sensorId, // Store sensor ID for live polling
   };
   updateSlot(blockId, displayData);
 };
 
 /**
- * NEW API: displayBar - shows horizontal color bar with gradient
+ * NEW API: displayBar - shows horizontal color bar with solid fill color
  * Supports live sensor polling for dynamic updates
  * @param {string} blockId - unique identifier for the block
  * @param {number} low - minimum range value
  * @param {number} high - maximum range value
  * @param {number} value - current sensor value (can be a sensor ID string for live polling)
- * @param {string} color1 - start color (hex)
- * @param {string} color2 - end color (hex)
+ * @param {string} color - bar fill color (hex)
  * @param {number} steps - number of segments
  * @param {string} label - sensor name/label (optional)
  * @param {string} unit - unit of measurement (optional)
  * @param {string} position - which screen to display on: 'top', 'center', or 'bottom'
  * @param {string} sensorId - sensor ID for live polling (optional, if provided, value is ignored)
  */
-window.displayBar = function(blockId, low, high, value, color1, color2, steps, label, unit, position, sensorId) {
+window.displayBar = function (
+  blockId,
+  low,
+  high,
+  value,
+  color,
+  steps,
+  label,
+  unit,
+  position,
+  sensorId
+) {
   const displayData = {
-    type: 'bar',
+    type: "bar",
     low: Number(low) || 0,
     high: Number(high) || 100,
     value: Number(value) || 0,
-    color1: color1 || '#00ff00',
-    color2: color2 || '#ff0000',
+    color: color || "#00ff00",
     steps: Number(steps) || 10,
-    label: label || '',
-    unit: unit || '',
-    position: position || 'center',
-    sensorId: sensorId // Store sensor ID for live polling
+    label: label || "",
+    unit: unit || "",
+    position: position || "center",
+    sensorId: sensorId, // Store sensor ID for live polling
   };
   updateSlot(blockId, displayData);
 };
@@ -139,26 +161,37 @@ window.displayBar = function(blockId, low, high, value, color1, color2, steps, l
  * DEPRECATED: Old canvas-based bar function (kept for backward compatibility)
  * Use displayBar() instead for new code
  */
-window.drawBar = function(color1, color2, steps) {
-  console.warn('drawBar() is deprecated. Use displayBar(blockId, low, high, value, color1, color2, steps) instead.');
+window.drawBar = function (color1, color2, steps) {
+  console.warn(
+    "drawBar() is deprecated. Use displayBar(blockId, low, high, value, color1, color2, steps) instead."
+  );
 };
 
 /**
  * DEPRECATED: Old canvas-based horizontal bar (kept for backward compatibility)
  * Use displayBar() instead for new code
  */
-window.drawHorBar = function(sensorId, min, max, color1, color2, steps) {
-  console.warn('drawHorBar() is deprecated. Use displayBar(blockId, low, high, value, color1, color2, steps) instead.');
+window.drawHorBar = function (sensorId, min, max, color1, color2, steps) {
+  console.warn(
+    "drawHorBar() is deprecated. Use displayBar(blockId, low, high, value, color1, color2, steps) instead."
+  );
 
   // Fallback: try to get sensor value and display
-  if (typeof getSensorValue === 'function') {
+  if (typeof getSensorValue === "function") {
     const value = getSensorValue(sensorId);
-    window.displayBar(`bar_${sensorId}`, min, max, value, color1, color2, steps);
+    window.displayBar(
+      `bar_${sensorId}`,
+      min,
+      max,
+      value,
+      color1,
+      color2,
+      steps
+    );
   }
 };
-  
-  
-  /*
+
+/*
   window.clearScreen = function () {
     const el = document.getElementById("outputArea");
     if (el) {
