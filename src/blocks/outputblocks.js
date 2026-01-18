@@ -263,7 +263,25 @@ Blockly.Blocks["display_sensor"] = {
 Blockly.Blocks["delay"] = {
   init: function () {
     this.jsonInit({
-      message0: "delay for %1 (ms)", //%{BKY_DELAY_TEXT}
+      message0: "delay %1 (ms)", //%{BKY_DELAY_TEXT}
+      args0: [
+        {
+          type: "input_value",
+          name: "INPUT",
+          check: "Number",
+        },
+      ],
+      previousStatement: null,
+      nextStatement: null,
+      colour: "#D679B3",
+    });
+  },
+};
+
+Blockly.Blocks["delay_seconds"] = {
+  init: function () {
+    this.jsonInit({
+      message0: "delay %1 (s)",
       args0: [
         {
           type: "input_value",

@@ -6,6 +6,6 @@ export const inputBlocksCommon = {
   contents: [
     { kind: 'block', type: 'get_temperature' }, // ambient temperature (°C)
     { kind: 'block', type: 'get_amb_temp' }, // ambient temperature (°C)
-    { kind: 'block', type: 'get_external' }, // ambient temperature (°C)
+    // { kind: 'block', type: 'get_external' }, // attached sensor - commented out (not needed for now)
   ],
 };

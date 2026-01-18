@@ -12,6 +12,28 @@ javascriptGenerator.forBlock["pause"] = function (block) {
   return `await pause(${delay});\n`;
 };
 
+// delay block (milliseconds)
+javascriptGenerator.forBlock["delay"] = function (block) {
+  const delay =
+    javascriptGenerator.valueToCode(
+      block,
+      "INPUT",
+      javascriptGenerator.ORDER_NONE
+    ) || "0";
+  return `await pause(${delay});\n`;
+};
+
+// delay_seconds block (converts seconds to milliseconds)
+javascriptGenerator.forBlock["delay_seconds"] = function (block) {
+  const delaySeconds =
+    javascriptGenerator.valueToCode(
+      block,
+      "INPUT",
+      javascriptGenerator.ORDER_NONE
+    ) || "0";
+  return `await pause(${delaySeconds} * 1000);\n`;
+};
+
 // beep block
 javascriptGenerator.forBlock["beep"] = function (block) {
   const volume = block.getFieldValue("VOLUME");

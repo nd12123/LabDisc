@@ -46,7 +46,7 @@
         contents: [
           { kind: 'block', type: 'controls_if' },
           { kind: 'block', type: 'logic_compare' },
-          
+          { kind: 'block', type: 'logic_boolean' },
       {
         "kind": "block",
         "type": "logic_negate"
@@ -62,7 +62,6 @@
           "hasElse":"true"
         },
       },
-          //true/false?
         ]
       },
       {
@@ -93,9 +92,13 @@
             "kind": "block",
             "type": "forever_loop_clean"
           },
-          { 
-            kind: 'block', 
-            type: 'delay' 
+          {
+            kind: 'block',
+            type: 'delay'
+          },
+          {
+            kind: 'block',
+            type: 'delay_seconds'
           },
         ]
       },
