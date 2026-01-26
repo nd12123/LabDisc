@@ -37,6 +37,9 @@ export function loadWorkspaceFromFile(json) {
 
     // 2. Загружаем из JS-объекта back workspace
     Blockly.serialization.workspaces.load(json, window.workspace);
+
+    // 3. Auto-center and scroll to center the loaded code
+    window.workspace.scrollCenter()
   } catch (e) {
     console.error("Error loading workspace JSON:", e);
   }
