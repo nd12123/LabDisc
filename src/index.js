@@ -611,6 +611,22 @@ window.setModel = async function setModel(modelName, clearWorkspace = true) {
   }
 };
 
+/**
+ * Toggles the visibility of the Logic category in the toolbox.
+ * @param {boolean} isVisible - Whether the Logic category should be visible.
+ */
+window.toggleToolboxLogic = function (isVisible) {
+  if (window.workspace) {
+    if (isVisible) {
+      const toolbox = window.workspace.getToolbox();
+      const categories = toolbox.getToolboxItems();
+      toolbox.setSelectedItem(categories[0]);
+    } else {
+      window.workspace.getFlyout().hide();
+    }
+  }
+};
+
 /*
 let pollingId = null;
 

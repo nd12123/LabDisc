@@ -17,7 +17,6 @@ function mergeInputCategories(commonCat, modelCat) {
 
 export function getToolboxForModel(model) {
   const m = (model || "").toLowerCase();
-  console.log(model);
   const modelInput =
     m === "enviro"
       ? inputBlocksEnviro

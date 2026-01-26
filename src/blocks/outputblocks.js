@@ -1,4 +1,78 @@
 import * as Blockly from "blockly/core";
+import { MODEL_SENSORS } from "../logic/modelSensors.js";
+import { SENSOR_META } from "../logic/sensorMetadata.js";
+
+// Map of ID to Name from the original hardcoded list
+const SENSOR_NAMES = {
+  1: "UV Index",
+  2: "pH",
+  3: "CO2",
+  4: "Barometer",
+  5: "IR Temp",
+  6: "Humidity",
+  7: "GPS",
+  8: "GPS Latitude",
+  9: "GPS Longitude",
+  10: "GPS Speed",
+  11: "GPS Course",
+  13: "External Temp",
+  14: "Colorimeter",
+  15: "Color R",
+  16: "Color G",
+  17: "Color B",
+  20: "Light",
+  21: "Sound Level",
+  22: "Pulse",
+  23: "Heart Rate",
+  24: "Pulse Waveform",
+  25: "Distance",
+  26: "Air Pressure",
+  27: "Voltage",
+  28: "Current",
+  29: "Humidity Analog",
+  30: "Temperature",
+  31: "Turbidity",
+  32: "External Input 1",
+  33: "Microphone",
+  34: "Low Voltage",
+  36: "Acceleration X",
+  37: "Acceleration Y",
+  38: "Acceleration Z",
+  39: "External Input 2",
+  40: "Dissolved O₂",
+  41: "Conductivity",
+  42: "Thermocouple",
+  47: "Barometer KPa",
+  48: "Ion",
+  49: "Mini Voltage",
+  50: "Mini Current",
+};
+
+function getSensorOptions() {
+  const model = window.activeModel || "default";
+  const sensors = MODEL_SENSORS[model] || MODEL_SENSORS["default"];
+
+  const options = sensors.map((id) => {
+    let name = SENSOR_NAMES[id];
+    if (!name) {
+      const meta = SENSOR_META[id];
+      if (meta) name = meta.name;
+    }
+    if (!name) name = "Sensor " + id;
+    return [name, String(id)];
+  });
+
+  if (options.length === 0) return [["No sensors", "-1"]];
+
+  return options;
+}
+
+Blockly.Extensions.register("dynamic_sensor_dropdown", function () {
+  const field = this.getField("SENSOR_ID");
+  if (field) {
+    field.setOptions(getSensorOptions);
+  }
+});
 
 Blockly.Blocks["pause"] = {
   init: function () {
@@ -52,13 +126,17 @@ Blockly.Blocks["display_text"] = {
   init: function () {
     this.jsonInit({
       type: "display_text",
-      message0: "display text %1 color %2 background %3 on %4",
+      message0: "display text %1",
+      message1: "color %1 background %2",
+      message2: "on %1",
       args0: [
         {
           type: "field_input",
           name: "TEXT",
           text: "Hello!",
         },
+      ],
+      args1: [
         {
           type: "field_colour",
           name: "COLOR",
@@ -67,6 +145,8 @@ Blockly.Blocks["display_text"] = {
           type: "field_colour",
           name: "BG",
         },
+      ],
+      args2: [
         {
           type: "field_dropdown",
           name: "POSITION",
@@ -94,13 +174,17 @@ Blockly.Blocks["display_text"] = {
 Blockly.Blocks["display_var"] = {
   init: function () {
     this.jsonInit({
-      message0: "display variable %1 color %2 background %3 on %4", //%{BKY_DISPLAY_VAR}
+      message0: "display variable %1",
+      message1: "color %1 background %2",
+      message2: "on %1",
       args0: [
         {
           type: "input_value",
           name: "var",
           check: "Number",
         },
+      ],
+      args1: [
         {
           type: "field_colour",
           name: "COLOR",
@@ -109,6 +193,8 @@ Blockly.Blocks["display_var"] = {
           type: "field_colour",
           name: "BG",
         },
+      ],
+      args2: [
         {
           type: "field_dropdown",
           name: "POSITION",
@@ -183,49 +269,7 @@ Blockly.Blocks["display_sensor"] = {
         {
           type: "field_dropdown",
           name: "SENSOR_ID",
-          options: [
-            ["Temperature", "30"],
-            ["Light", "20"],
-            ["pH", "2"],
-            ["Current", "28"],
-            ["Voltage", "27"],
-            ["Sound Level", "21"],
-            ["Air Pressure", "26"],
-            ["External Temp", "13"],
-            ["Barometer", "4"],
-            ["Humidity", "6"],
-            ["Distance", "25"],
-            ["Turbidity", "31"],
-            ["External Input 1", "32"],
-            ["Microphone", "33"],
-            ["Dissolved O₂", "40"],
-            ["Conductivity", "41"],
-            ["Humidity (GenSci)", "6"],
-            ["GPS Lat (GenSci)", "8"],
-            ["GPS Lon (GenSci)", "9"],
-            ["GPS Speed (GenSci)", "10"],
-            ["GPS Course (GenSci)", "11"],
-            ["GPS Time (GenSci)", "7"],
-            ["Microphone (GenSci)", "33"],
-            ["Low Voltage", "34"],
-            ["External 1", "32"],
-            ["External 2", "39"],
-            ["UV Index", "1"],
-            ["Barometer (Enviro)", "4"],
-            ["IR Temp", "5"],
-            ["GPS Lat (Enviro)", "8"],
-            ["GPS Lon (Enviro)", "9"],
-            ["GPS Speed (Enviro)", "10"],
-            ["GPS Course (Enviro)", "11"],
-            ["GPS Time (Enviro)", "7"],
-            ["Color R", "15"],
-            ["Color G", "16"],
-            ["Color B", "17"],
-            ["Turbidity (Enviro)", "31"],
-            ["Dissolved O₂ (Enviro)", "40"],
-            ["Thermocouple", "42"],
-            ["Heart Rate", "23"],
-          ],
+          options: [["Loading...", "-1"]],
         },
         {
           type: "field_colour",
@@ -256,6 +300,7 @@ Blockly.Blocks["display_sensor"] = {
       tooltip:
         "Display the current value from a selected sensor on the screen. Use SENSOR_ID field (not SENSOR) in JSON.",
       helpUrl: "",
+      extensions: ["dynamic_sensor_dropdown"],
     });
   },
 };
@@ -371,49 +416,7 @@ Blockly.Blocks["horizontal_bar"] = {
         {
           type: "field_dropdown",
           name: "SENSOR_ID",
-          options: [
-            ["Temperature", "30"],
-            ["Light", "20"],
-            ["pH", "2"],
-            ["Current", "28"],
-            ["Voltage", "27"],
-            ["Sound Level", "21"],
-            ["Air Pressure", "26"],
-            ["External Temp", "13"],
-            ["Barometer", "4"],
-            ["Humidity", "6"],
-            ["Distance", "25"],
-            ["Turbidity", "31"],
-            ["External Input 1", "32"],
-            ["Microphone", "33"],
-            ["Dissolved O₂", "40"],
-            ["Conductivity", "41"],
-            ["Humidity (GenSci)", "6"],
-            ["GPS Lat (GenSci)", "8"],
-            ["GPS Lon (GenSci)", "9"],
-            ["GPS Speed (GenSci)", "10"],
-            ["GPS Course (GenSci)", "11"],
-            ["GPS Time (GenSci)", "7"],
-            ["Microphone (GenSci)", "33"],
-            ["Low Voltage", "34"],
-            ["External 1", "32"],
-            ["External 2", "39"],
-            ["UV Index", "1"],
-            ["Barometer (Enviro)", "4"],
-            ["IR Temp", "5"],
-            ["GPS Lat (Enviro)", "8"],
-            ["GPS Lon (Enviro)", "9"],
-            ["GPS Speed (Enviro)", "10"],
-            ["GPS Course (Enviro)", "11"],
-            ["GPS Time (Enviro)", "7"],
-            ["Color R", "15"],
-            ["Color G", "16"],
-            ["Color B", "17"],
-            ["Turbidity (Enviro)", "31"],
-            ["Dissolved O₂ (Enviro)", "40"],
-            ["Thermocouple", "42"],
-            ["Heart Rate", "23"],
-          ],
+          options: [["Loading...", "-1"]],
         },
       ],
       args1: [
@@ -461,6 +464,7 @@ Blockly.Blocks["horizontal_bar"] = {
       tooltip:
         "Display sensor value as a color-shifting bar. Use SENSOR_ID field (not SENSOR) in JSON.",
       helpUrl: "",
+      extensions: ["dynamic_sensor_dropdown"],
     });
   },
 };
