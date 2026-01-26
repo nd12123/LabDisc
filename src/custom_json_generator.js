@@ -359,6 +359,10 @@ function blockToStatement(block) {
       const durationMs = inputExpr(block, "INPUT", DEFAULT_LITERAL_ZERO);
       return { runtimeType: "delayNode", durationMs };
     }
+    case "delay_seconds": {
+      const durationMs = inputExpr(block, "INPUT", DEFAULT_LITERAL_ZERO);
+      return { runtimeType: "delayNode", durationMs: binaryNode("*", durationMs, literalNode(1000)) };
+    }
     case "variables_set": {
       const name = block.fields?.VAR?.name || block.fields?.VAR?.id || "item";
       const value = inputExpr(block, "VALUE", DEFAULT_LITERAL_ZERO);

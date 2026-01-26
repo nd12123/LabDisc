@@ -62,8 +62,6 @@ div[role="treeitem"] {
   .blocklyToolbox {
     background-color: #F4DEC8 !important;
     padding: 8px 0;
-    border-radius: 20px 0 0 20px;
-    box-shadow: inset -1px 0 0 rgba(0,0,0,0.1);
     min-width: 140px; /* Give more horizontal space to categories */
   }
   
@@ -86,7 +84,10 @@ div[role="treeitem"] {
   }
   
   .blocklyFlyout {
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.08);
-    border-radius: 0 20px 20px 0;
+    box-shadow: #FFF9F3 0px 0px 5px 18px;
+    outline: 1rem solid #FFF9F3;
+    outline-offset: 0px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
   }
   
