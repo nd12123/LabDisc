@@ -420,7 +420,7 @@ window.addEventListener("message", function (event) {
           window.parent.postMessage(
             {
               type: "astJson",
-              data: JSON.stringify(astJson),
+              data: astJson,
             },
             "*"
           );
@@ -667,7 +667,7 @@ window.getAstJson = function () {
   try {
     const serialized = Blockly.serialization.workspaces.save(workspace);
     const ast = convertSerializedWorkspaceToAst(serialized);
-    return ast;
+    return JSON.stringify(ast);
   } catch (e) {
     console.error("Error getting AST JSON:", e);
     return null;
