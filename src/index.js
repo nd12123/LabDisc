@@ -454,6 +454,11 @@ window.addEventListener("message", function (event) {
         break;
       }
 
+      case "toggleToolbox": {
+        window.toggleToolboxLogic(payload.code.toString() === "true");
+        break;
+      }
+
       default:
         console.warn("Unknown postMessage action:", action);
     }
