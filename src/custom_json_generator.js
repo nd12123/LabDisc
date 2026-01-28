@@ -11,80 +11,6 @@
 
 // ---- Helpers ---------------------------------------------------------------
 
-const SENSOR_MAP = {
-  // Generic sensors
-  get_ambient_temperature: { sensorId: 30 },
-  get_temperature: { sensorId: 30 },
-  get_amb_temp: { sensorId: 30 },
-  get_external_temperature: { sensorId: 13 },
-  get_external: { sensorId: 13 },
-  get_light: { sensorId: 20 },
-  get_ph: { sensorId: 2 },
-  get_barometer: { sensorId: 4 },
-  get_humidity: { sensorId: 6 },
-  get_sound_level: { sensorId: 21 },
-  get_distance: { sensorId: 25 },
-  get_air_pressure: { sensorId: 26 },
-  get_voltage: { sensorId: 27 },
-  get_current: { sensorId: 28 },
-  get_external1: { sensorId: 32 },
-  get_microphone: { sensorId: 33 },
-  get_do: { sensorId: 40 },
-  get_turbidity: { sensorId: 31 },
-  get_conductivity: { sensorId: 41 },
-  // GenSci
-  gensci_get_humidity: { sensorId: 6 },
-  gensci_get_microphone: { sensorId: 33 },
-  gensci_get_gps_lat: { sensorId: 7, channel: 0 },
-  gensci_get_gps_lon: { sensorId: 7, channel: 1 },
-  gensci_get_gps_speed: { sensorId: 7, channel: 2 },
-  gensci_get_gps_course: { sensorId: 7, channel: 3 },
-  gensci_get_gps_time: { sensorId: 7, channel: 4 },
-  // Enviro
-  enviro_get_uv: { sensorId: 1 },
-  enviro_get_ir_temperature: { sensorId: 5 },
-  enviro_get_barometer: { sensorId: 4 },
-  enviro_get_gps_lat: { sensorId: 7, channel: 0 },
-  enviro_get_gps_lon: { sensorId: 7, channel: 1 },
-  enviro_get_gps_speed: { sensorId: 7, channel: 2 },
-  enviro_get_gps_course: { sensorId: 7, channel: 3 },
-  enviro_get_gps_time: { sensorId: 7, channel: 4 },
-  enviro_get_color_r: { sensorId: 14, channel: 0 },
-  enviro_get_color_g: { sensorId: 14, channel: 1 },
-  enviro_get_color_b: { sensorId: 14, channel: 2 },
-  enviro_get_turbidity: { sensorId: 31 },
-  enviro_get_do: { sensorId: 40 },
-  // Physio
-  physio_get_low_voltage: { sensorId: 34 },
-  physio_get_external1: { sensorId: 32 },
-  physio_get_external2: { sensorId: 39 },
-  physio_get_accel: { sensorId: 35, channel: "vector" },
-  // BioChem
-  biochem_get_hr: { sensorId: 22 },
-  biochem_get_thermocouple: { sensorId: 42 },
-};
-
-const GPS_COMPOSITE = [
-  { sensorId: 8 }, // lat
-  { sensorId: 9 }, // lon
-  { sensorId: 10 }, // speed
-  { sensorId: 11 }, // course
-];
-
-const GNSCI_GPS_COMPOSITE = [
-  { sensorId: 7, channel: 0 },
-  { sensorId: 7, channel: 1 },
-  { sensorId: 7, channel: 2 },
-  { sensorId: 7, channel: 3 },
-  { sensorId: 7, channel: 4 },
-];
-
-const COLOR_COMPOSITE = [
-  { sensorId: 14, channel: 0 },
-  { sensorId: 14, channel: 1 },
-  { sensorId: 14, channel: 2 },
-];
-
 const DEFAULT_LITERAL_ZERO = literalNode(0);
 const DEFAULT_LITERAL_FALSE = literalNode(false);
 
@@ -113,14 +39,11 @@ function ensureString(value, fallback = "") {
   return typeof value === "string" ? value : fallback;
 }
 
-function toReadSensor(blockType) {
-  const entry = SENSOR_MAP[blockType];
-  if (!entry) return null;
-  const node = { runtimeType: "readSensor", sensorId: entry.sensorId };
-  if (entry.channel !== undefined) {
-    node.channel = entry.channel;
-  }
-  return node;
+function toReadSensor(block) {
+  if (!block || block.type !== "sensor_read") return null;
+  const rawId = block.data ?? block.fields?.SENSOR_ID;
+  const sensorId = ensureNumber(rawId, 0);
+  return { runtimeType: "readSensor", sensorId };
 }
 
 // ---- Expression conversion -------------------------------------------------
@@ -130,7 +53,7 @@ function blockToExpression(block) {
   const type = block.type;
 
   // Direct sensor reads
-  const sensorNode = toReadSensor(type);
+  const sensorNode = toReadSensor(block);
   if (sensorNode) return sensorNode;
 
   switch (type) {
@@ -215,7 +138,7 @@ function blockToExpression(block) {
       const numberToCheck = inputExpr(
         block,
         "NUMBER_TO_CHECK",
-        DEFAULT_LITERAL_ZERO
+        DEFAULT_LITERAL_ZERO,
       );
       const property = block.fields?.PROPERTY || "EVEN";
       switch (property) {
@@ -223,13 +146,13 @@ function blockToExpression(block) {
           return binaryNode(
             "==",
             binaryNode("%", numberToCheck, literalNode(2)),
-            literalNode(0)
+            literalNode(0),
           );
         case "ODD":
           return binaryNode(
             "!=",
             binaryNode("%", numberToCheck, literalNode(2)),
-            literalNode(0)
+            literalNode(0),
           );
         case "PRIME":
           return unaryNode("isPrime", numberToCheck);
@@ -237,7 +160,7 @@ function blockToExpression(block) {
           return binaryNode(
             "==",
             numberToCheck,
-            unaryNode("floor", numberToCheck)
+            unaryNode("floor", numberToCheck),
           );
         case "POSITIVE":
           return binaryNode(">", numberToCheck, literalNode(0));
@@ -248,37 +171,16 @@ function blockToExpression(block) {
           return binaryNode(
             "==",
             binaryNode("%", numberToCheck, divisor),
-            literalNode(0)
+            literalNode(0),
           );
         }
         default:
           return binaryNode(
             "==",
             binaryNode("%", numberToCheck, literalNode(2)),
-            literalNode(0)
+            literalNode(0),
           );
       }
-    }
-    case "get_gps":
-      return literalNode(
-        GPS_COMPOSITE.map((c) => ({ runtimeType: "readSensor", ...c }))
-      );
-    case "gensci_get_gps":
-    case "enviro_get_gps":
-      return literalNode(
-        GNSCI_GPS_COMPOSITE.map((c) => ({ runtimeType: "readSensor", ...c }))
-      );
-    case "get_color":
-      return literalNode(
-        COLOR_COMPOSITE.map((c) => ({ runtimeType: "readSensor", ...c }))
-      );
-    case "physio_get_accel": {
-      // Represent accel as three channel reads if used as an expression.
-      return literalNode([
-        { runtimeType: "readSensor", sensorId: 35, channel: 0 },
-        { runtimeType: "readSensor", sensorId: 35, channel: 1 },
-        { runtimeType: "readSensor", sensorId: 35, channel: 2 },
-      ]);
     }
     default:
       return DEFAULT_LITERAL_ZERO;
@@ -361,7 +263,10 @@ function blockToStatement(block) {
     }
     case "delay_seconds": {
       const durationMs = inputExpr(block, "INPUT", DEFAULT_LITERAL_ZERO);
-      return { runtimeType: "delayNode", durationMs: binaryNode("*", durationMs, literalNode(1000)) };
+      return {
+        runtimeType: "delayNode",
+        durationMs: binaryNode("*", durationMs, literalNode(1000)),
+      };
     }
     case "variables_set": {
       const name = block.fields?.VAR?.name || block.fields?.VAR?.id || "item";
@@ -495,12 +400,7 @@ function isExpressionBlock(type) {
     "math_round",
     "math_modulo",
     "math_number_property",
-    "get_gps",
-    "gensci_get_gps",
-    "enviro_get_gps",
-    "get_color",
-    "physio_get_accel",
-    ...Object.keys(SENSOR_MAP),
+    "sensor_read",
   ].includes(type);
 }
 

@@ -45,8 +45,10 @@
                       "inputs": {
                         "var": {
                           "block": {
-                            "type": "get_ambient_temperature",
-                            "id": "demo_temp_sensor"
+                            "type": "sensor_read",
+                            "id": "demo_temp_sensor",
+                            "fields": { "LABEL": "Amb. Temperature (°C)" },
+                            "data": "30"
                           }
                         }
                       },
@@ -77,8 +79,10 @@
                               "inputs": {
                                 "var": {
                                   "block": {
-                                    "type": "get_light",
-                                    "id": "demo_light_sensor"
+                                    "type": "sensor_read",
+                                    "id": "demo_light_sensor",
+                                    "fields": { "LABEL": "Light (lx)" },
+                                    "data": "20"
                                   }
                                 }
                               },
@@ -109,8 +113,12 @@
                                       "inputs": {
                                         "var": {
                                           "block": {
-                                            "type": "get_humidity",
-                                            "id": "demo_humidity_sensor"
+                                            "type": "sensor_read",
+                                            "id": "demo_humidity_sensor",
+                                            "fields": {
+                                              "LABEL": "Humidity (%RH)"
+                                            },
+                                            "data": "6"
                                           }
                                         }
                                       },

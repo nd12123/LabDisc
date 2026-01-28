@@ -45,8 +45,10 @@
                       "inputs": {
                         "VALUE": {
                           "block": {
-                            "type": "get_temperature",
-                            "id": ",,m3]c6(AAK$+X[Cqa!^"
+                            "type": "sensor_read",
+                            "id": ",,m3]c6(AAK$+X[Cqa!^",
+                            "fields": {"LABEL": "Amb. Temperature (°C)"},
+                            "data": "30"
                           }
                         }
                       },
@@ -99,8 +101,10 @@
                                   "inputs": {
                                     "var": {
                                       "block": {
-                                        "type": "get_temperature",
-                                        "id": "}6=.24;P{v%2)|8noO~@"
+                                        "type": "sensor_read",
+                                        "id": "}6=.24;P{v%2)|8noO~@",
+                                        "fields": {"LABEL": "Amb. Temperature (°C)"},
+                                        "data": "30"
                                       }
                                     }
                                   },

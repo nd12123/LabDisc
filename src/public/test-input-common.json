@@ -27,7 +27,7 @@
                       "block": {
                         "type": "math_number",
                         "id": "pause1_num",
-                        "fields": {"NUM": 500}
+                        "fields": { "NUM": 500 }
                       }
                     }
                   },
@@ -42,7 +42,12 @@
                       },
                       "inputs": {
                         "var": {
-                          "block": {"type": "get_ambient_temperature", "id": "sensor_amb_temp"}
+                          "block": {
+                            "type": "sensor_read",
+                            "id": "sensor_amb_temp",
+                            "fields": { "LABEL": "Amb. Temperature (°C)" },
+                            "data": "30"
+                          }
                         }
                       },
                       "next": {
@@ -50,49 +55,121 @@
                           "type": "pause",
                           "id": "pause2",
                           "inputs": {
-                            "INPUT": {"block": {"type": "math_number", "id": "pause2_num", "fields": {"NUM": 500}}}
+                            "INPUT": {
+                              "block": {
+                                "type": "math_number",
+                                "id": "pause2_num",
+                                "fields": { "NUM": 500 }
+                              }
+                            }
                           },
                           "next": {
                             "block": {
                               "type": "display_var",
                               "id": "test_light",
-                              "fields": {"COLOR": "#f39c12", "BG": "#fef5e7", "POSITION": "center"},
+                              "fields": {
+                                "COLOR": "#f39c12",
+                                "BG": "#fef5e7",
+                                "POSITION": "center"
+                              },
                               "inputs": {
-                                "var": {"block": {"type": "get_light", "id": "sensor_light"}}
+                                "var": {
+                                  "block": {
+                                    "type": "sensor_read",
+                                    "id": "sensor_light",
+                                    "fields": { "LABEL": "Light (lx)" },
+                                    "data": "20"
+                                  }
+                                }
                               },
                               "next": {
                                 "block": {
                                   "type": "pause",
                                   "id": "pause3",
-                                  "inputs": {"INPUT": {"block": {"type": "math_number", "id": "pause3_num", "fields": {"NUM": 500}}}},
+                                  "inputs": {
+                                    "INPUT": {
+                                      "block": {
+                                        "type": "math_number",
+                                        "id": "pause3_num",
+                                        "fields": { "NUM": 500 }
+                                      }
+                                    }
+                                  },
                                   "next": {
                                     "block": {
                                       "type": "display_var",
                                       "id": "test_humidity",
-                                      "fields": {"COLOR": "#3498db", "BG": "#d6eaf8", "POSITION": "center"},
+                                      "fields": {
+                                        "COLOR": "#3498db",
+                                        "BG": "#d6eaf8",
+                                        "POSITION": "center"
+                                      },
                                       "inputs": {
-                                        "var": {"block": {"type": "get_humidity", "id": "sensor_humidity"}}
+                                        "var": {
+                                          "block": {
+                                            "type": "sensor_read",
+                                            "id": "sensor_humidity",
+                                            "fields": {
+                                              "LABEL": "Humidity (%RH)"
+                                            },
+                                            "data": "6"
+                                          }
+                                        }
                                       },
                                       "next": {
                                         "block": {
                                           "type": "pause",
                                           "id": "pause4",
-                                          "inputs": {"INPUT": {"block": {"type": "math_number", "id": "pause4_num", "fields": {"NUM": 500}}}},
+                                          "inputs": {
+                                            "INPUT": {
+                                              "block": {
+                                                "type": "math_number",
+                                                "id": "pause4_num",
+                                                "fields": { "NUM": 500 }
+                                              }
+                                            }
+                                          },
                                           "next": {
                                             "block": {
                                               "type": "display_var",
                                               "id": "test_distance",
-                                              "fields": {"COLOR": "#9b59b6", "BG": "#ebdef0", "POSITION": "center"},
+                                              "fields": {
+                                                "COLOR": "#9b59b6",
+                                                "BG": "#ebdef0",
+                                                "POSITION": "center"
+                                              },
                                               "inputs": {
-                                                "var": {"block": {"type": "get_distance", "id": "sensor_distance"}}
+                                                "var": {
+                                                  "block": {
+                                                    "type": "sensor_read",
+                                                    "id": "sensor_distance",
+                                                    "fields": {
+                                                      "LABEL": "Distance (m)"
+                                                    },
+                                                    "data": "25"
+                                                  }
+                                                }
                                               },
                                               "next": {
                                                 "block": {
                                                   "type": "display_var",
                                                   "id": "test_sound",
-                                                  "fields": {"COLOR": "#16a085", "BG": "#d5f4e6", "POSITION": "center"},
+                                                  "fields": {
+                                                    "COLOR": "#16a085",
+                                                    "BG": "#d5f4e6",
+                                                    "POSITION": "center"
+                                                  },
                                                   "inputs": {
-                                                    "var": {"block": {"type": "get_sound_level", "id": "sensor_sound"}}
+                                                    "var": {
+                                                      "block": {
+                                                        "type": "sensor_read",
+                                                        "id": "sensor_sound",
+                                                        "fields": {
+                                                          "LABEL": "Sound Level (dB)"
+                                                        },
+                                                        "data": "21"
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }

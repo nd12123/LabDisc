@@ -1,52 +1,7 @@
 import * as Blockly from "blockly/core";
 import { MODEL_SENSORS } from "../logic/modelSensors.js";
 import { SENSOR_META } from "../logic/sensorMetadata.js";
-
-// Map of ID to Name from the original hardcoded list
-const SENSOR_NAMES = {
-  1: "UV Index",
-  2: "pH",
-  3: "CO2",
-  4: "Barometer",
-  5: "IR Temp",
-  6: "Humidity",
-  7: "GPS",
-  8: "GPS Latitude",
-  9: "GPS Longitude",
-  10: "GPS Speed",
-  11: "GPS Course",
-  13: "External Temp",
-  14: "Colorimeter",
-  15: "Color R",
-  16: "Color G",
-  17: "Color B",
-  20: "Light",
-  21: "Sound Level",
-  22: "Pulse",
-  23: "Heart Rate",
-  24: "Pulse Waveform",
-  25: "Distance",
-  26: "Air Pressure",
-  27: "Voltage",
-  28: "Current",
-  29: "Humidity Analog",
-  30: "Temperature",
-  31: "Turbidity",
-  32: "External Input 1",
-  33: "Microphone",
-  34: "Low Voltage",
-  36: "Acceleration X",
-  37: "Acceleration Y",
-  38: "Acceleration Z",
-  39: "External Input 2",
-  40: "Dissolved O₂",
-  41: "Conductivity",
-  42: "Thermocouple",
-  47: "Barometer KPa",
-  48: "Ion",
-  49: "Mini Voltage",
-  50: "Mini Current",
-};
+import { SENSOR_NAMES } from "../logic/sensorNames.js";
 
 function getSensorOptions() {
   const model = window.activeModel || "default";
@@ -83,6 +38,12 @@ Blockly.Blocks["pause"] = {
           type: "input_value",
           name: "INPUT",
           check: "Number",
+          shadow: {
+            type: "math_number",
+            fields: {
+              NUM: 500,
+            },
+          },
         },
       ],
       previousStatement: null,
@@ -127,8 +88,7 @@ Blockly.Blocks["display_text"] = {
     this.jsonInit({
       type: "display_text",
       message0: "display text %1",
-      message1: "color %1 background %2",
-      message2: "on %1",
+      message1: "color %1 background %2 on %3",
       args0: [
         {
           type: "field_input",
@@ -140,13 +100,12 @@ Blockly.Blocks["display_text"] = {
         {
           type: "field_colour",
           name: "COLOR",
+          colour: "#000000",
         },
         {
           type: "field_colour",
           name: "BG",
         },
-      ],
-      args2: [
         {
           type: "field_dropdown",
           name: "POSITION",
@@ -175,8 +134,7 @@ Blockly.Blocks["display_var"] = {
   init: function () {
     this.jsonInit({
       message0: "display variable %1",
-      message1: "color %1 background %2",
-      message2: "on %1",
+      message1: "color %1 background %2 on %3",
       args0: [
         {
           type: "input_value",
@@ -188,13 +146,12 @@ Blockly.Blocks["display_var"] = {
         {
           type: "field_colour",
           name: "COLOR",
+          colour: "#000000",
         },
         {
           type: "field_colour",
           name: "BG",
         },
-      ],
-      args2: [
         {
           type: "field_dropdown",
           name: "POSITION",
@@ -205,6 +162,7 @@ Blockly.Blocks["display_var"] = {
           ],
         },
       ],
+      inputsInline: false,
       fields: {
         COLOR: "#649FEF",
         BG: "#ffffff",
@@ -274,6 +232,7 @@ Blockly.Blocks["display_sensor"] = {
         {
           type: "field_colour",
           name: "COLOR",
+          colour: "#000000",
         },
         {
           type: "field_colour",
@@ -314,6 +273,12 @@ Blockly.Blocks["delay"] = {
           type: "input_value",
           name: "INPUT",
           check: "Number",
+          shadow: {
+            type: "math_number",
+            fields: {
+              NUM: 500,
+            },
+          },
         },
       ],
       previousStatement: null,
@@ -332,6 +297,12 @@ Blockly.Blocks["delay_seconds"] = {
           type: "input_value",
           name: "INPUT",
           check: "Number",
+          shadow: {
+            type: "math_number",
+            fields: {
+              NUM: 1,
+            },
+          },
         },
       ],
       previousStatement: null,
@@ -345,10 +316,8 @@ Blockly.Blocks["bar"] = {
   init: function () {
     this.jsonInit({
       type: "bar", //horizontal_bar?
-      message0: "bar from %1 to %2",
-      message1: "of variable %1",
-      message2: "in %1 steps",
-      message3: "with color %1 on %2",
+      message0: "bar from %1 to %2 of variable %3",
+      message1: "in %1 steps with color %2 on %3",
       args0: [
         {
           type: "field_number",
@@ -360,26 +329,23 @@ Blockly.Blocks["bar"] = {
           name: "MAX",
           value: 100,
         },
-      ],
-      args1: [
         {
           type: "input_value",
           name: "var",
           check: "Number",
         },
       ],
-      args2: [
+      args1: [
         {
           type: "field_number",
           name: "STEPS",
           value: 10,
           min: 1,
         },
-      ],
-      args3: [
         {
           type: "field_colour",
           name: "COLOR",
+          colour: "#000000",
         },
         {
           type: "field_dropdown",
@@ -395,6 +361,7 @@ Blockly.Blocks["bar"] = {
         COLOR: "#00ff00",
         POSITION: "center",
       },
+      inputsInline: false,
       previousStatement: null,
       nextStatement: null,
       colour: "#569FA8", //120,
@@ -408,18 +375,14 @@ Blockly.Blocks["horizontal_bar"] = {
   init: function () {
     this.jsonInit({
       type: "horizontal_bar",
-      message0: "display bar of %1",
-      message1: "from %1 to %2",
-      message2: "in %1 steps",
-      message3: "with color %1 on %2",
+      message0: "display bar of %1 from %2 to %3",
+      message1: "in %1 steps with color %2 on %3",
       args0: [
         {
           type: "field_dropdown",
           name: "SENSOR_ID",
           options: [["Loading...", "-1"]],
         },
-      ],
-      args1: [
         {
           type: "field_number",
           name: "MIN",
@@ -431,18 +394,17 @@ Blockly.Blocks["horizontal_bar"] = {
           value: 100,
         },
       ],
-      args2: [
+      args1: [
         {
           type: "field_number",
           name: "STEPS",
           value: 10,
           min: 1,
         },
-      ],
-      args3: [
         {
           type: "field_colour",
           name: "COLOR",
+          colour: "#000000",
         },
         {
           type: "field_dropdown",

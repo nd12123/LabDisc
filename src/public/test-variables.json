@@ -22,63 +22,163 @@
                 "block": {
                   "type": "pause",
                   "id": "pause0",
-                  "inputs": {"INPUT": {"block": {"type": "math_number", "id": "p0", "fields": {"NUM": 500}}}},
+                  "inputs": {
+                    "INPUT": {
+                      "block": {
+                        "type": "math_number",
+                        "id": "p0",
+                        "fields": { "NUM": 500 }
+                      }
+                    }
+                  },
                   "next": {
                     "block": {
                       "type": "variables_set",
                       "id": "set_counter",
-                      "fields": {"VAR": {"id": "counter_var", "name": "counter"}},
+                      "fields": {
+                        "VAR": { "id": "counter_var", "name": "counter" }
+                      },
                       "inputs": {
-                        "VALUE": {"block": {"type": "math_number", "id": "init_value", "fields": {"NUM": 42}}}
+                        "VALUE": {
+                          "block": {
+                            "type": "math_number",
+                            "id": "init_value",
+                            "fields": { "NUM": 42 }
+                          }
+                        }
                       },
                       "next": {
                         "block": {
                           "type": "display_var",
                           "id": "display_counter",
-                          "fields": {"COLOR": "#3498db", "BG": "#d6eaf8", "POSITION": "center"},
+                          "fields": {
+                            "COLOR": "#3498db",
+                            "BG": "#d6eaf8",
+                            "POSITION": "center"
+                          },
                           "inputs": {
-                            "var": {"block": {"type": "variables_get", "id": "get_counter", "fields": {"VAR": {"id": "counter_var", "name": "counter"}}}}
+                            "var": {
+                              "block": {
+                                "type": "variables_get",
+                                "id": "get_counter",
+                                "fields": {
+                                  "VAR": {
+                                    "id": "counter_var",
+                                    "name": "counter"
+                                  }
+                                }
+                              }
+                            }
                           },
                           "next": {
                             "block": {
                               "type": "pause",
                               "id": "pause1",
-                              "inputs": {"INPUT": {"block": {"type": "math_number", "id": "p1", "fields": {"NUM": 800}}}},
+                              "inputs": {
+                                "INPUT": {
+                                  "block": {
+                                    "type": "math_number",
+                                    "id": "p1",
+                                    "fields": { "NUM": 800 }
+                                  }
+                                }
+                              },
                               "next": {
                                 "block": {
                                   "type": "variables_set",
                                   "id": "set_sensor",
-                                  "fields": {"VAR": {"id": "sensor_var", "name": "sensor_reading"}},
+                                  "fields": {
+                                    "VAR": {
+                                      "id": "sensor_var",
+                                      "name": "sensor_reading"
+                                    }
+                                  },
                                   "inputs": {
-                                    "VALUE": {"block": {"type": "get_ambient_temperature", "id": "temp_sensor"}}
+                                    "VALUE": {
+                                      "block": {
+                                        "type": "sensor_read",
+                                        "id": "temp_sensor",
+                                        "fields": {
+                                          "LABEL": "Amb. Temperature (°C)"
+                                        },
+                                        "data": "30"
+                                      }
+                                    }
                                   },
                                   "next": {
                                     "block": {
                                       "type": "display_var",
                                       "id": "display_sensor",
-                                      "fields": {"COLOR": "#e74c3c", "BG": "#fadbd8", "POSITION": "center"},
+                                      "fields": {
+                                        "COLOR": "#e74c3c",
+                                        "BG": "#fadbd8",
+                                        "POSITION": "center"
+                                      },
                                       "inputs": {
-                                        "var": {"block": {"type": "variables_get", "id": "get_sensor", "fields": {"VAR": {"id": "sensor_var", "name": "sensor_reading"}}}}
+                                        "var": {
+                                          "block": {
+                                            "type": "variables_get",
+                                            "id": "get_sensor",
+                                            "fields": {
+                                              "VAR": {
+                                                "id": "sensor_var",
+                                                "name": "sensor_reading"
+                                              }
+                                            }
+                                          }
+                                        }
                                       },
                                       "next": {
                                         "block": {
                                           "type": "pause",
                                           "id": "pause2",
-                                          "inputs": {"INPUT": {"block": {"type": "math_number", "id": "p2", "fields": {"NUM": 800}}}},
+                                          "inputs": {
+                                            "INPUT": {
+                                              "block": {
+                                                "type": "math_number",
+                                                "id": "p2",
+                                                "fields": { "NUM": 800 }
+                                              }
+                                            }
+                                          },
                                           "next": {
                                             "block": {
                                               "type": "variables_set",
                                               "id": "set_computed",
-                                              "fields": {"VAR": {"id": "computed_var", "name": "result"}},
+                                              "fields": {
+                                                "VAR": {
+                                                  "id": "computed_var",
+                                                  "name": "result"
+                                                }
+                                              },
                                               "inputs": {
                                                 "VALUE": {
                                                   "block": {
                                                     "type": "math_arithmetic",
                                                     "id": "math_mult",
-                                                    "fields": {"OP": "MULTIPLY"},
+                                                    "fields": {
+                                                      "OP": "MULTIPLY"
+                                                    },
                                                     "inputs": {
-                                                      "A": {"block": {"type": "variables_get", "id": "get_for_calc", "fields": {"VAR": {"id": "counter_var", "name": "counter"}}}},
-                                                      "B": {"block": {"type": "math_number", "id": "mult_factor", "fields": {"NUM": 2}}}
+                                                      "A": {
+                                                        "block": {
+                                                          "type": "variables_get",
+                                                          "id": "get_for_calc",
+                                                          "fields": {
+                                                            "VAR": {
+                                                              "id": "counter_var",
+                                                              "name": "counter"
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "B": {
+                                                        "block": {
+                                                          "type": "math_number",
+                                                          "id": "mult_factor",
+                                                          "fields": { "NUM": 2 }
+                                                        }
+                                                      }
                                                     }
                                                   }
                                                 }
@@ -87,9 +187,24 @@
                                                 "block": {
                                                   "type": "display_var",
                                                   "id": "display_result",
-                                                  "fields": {"COLOR": "#27ae60", "BG": "#d5f4e6", "POSITION": "center"},
+                                                  "fields": {
+                                                    "COLOR": "#27ae60",
+                                                    "BG": "#d5f4e6",
+                                                    "POSITION": "center"
+                                                  },
                                                   "inputs": {
-                                                    "var": {"block": {"type": "variables_get", "id": "get_result", "fields": {"VAR": {"id": "computed_var", "name": "result"}}}}
+                                                    "var": {
+                                                      "block": {
+                                                        "type": "variables_get",
+                                                        "id": "get_result",
+                                                        "fields": {
+                                                          "VAR": {
+                                                            "id": "computed_var",
+                                                            "name": "result"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }

@@ -45,8 +45,10 @@
                       "inputs": {
                         "var": {
                           "block": {
-                            "type": "get_ambient_temperature",
-                            "id": "demo_temp_sensor"
+                            "type": "sensor_read",
+                            "id": "demo_temp_sensor",
+                            "fields": {"LABEL": "Amb. Temperature (°C)"},
+                            "data": "30"
                           }
                         }
                       },
