@@ -140,7 +140,7 @@ if (IS_IPAD && Blockly?.Variables?.promptName) {
     workspace,
     promptText,
     defaultName,
-    callback
+    callback,
   ) {
     window.__blocklyVarCallback = callback;
 
@@ -150,7 +150,7 @@ if (IS_IPAD && Blockly?.Variables?.promptName) {
           prompt: promptText,
           defaultName,
           retry: window.__blocklyVarRetry,
-        })
+        }),
     );
 
     // IMPORTANT:
@@ -360,6 +360,24 @@ window.Blockly = Blockly;
 window.workspace = Blockly.getMainWorkspace(); // tweaking with the workspace
 window.workspace.toolbox.flyout.autoClose = false; //uncomment for prod
 
+workspace.addChangeListener((event) => {
+  switch (event.type) {
+    case Blockly.Events.BLOCK_CREATE:
+    case Blockly.Events.BLOCK_DELETE:
+    case Blockly.Events.BLOCK_CHANGE:
+    case Blockly.Events.BLOCK_MOVE:
+      window.parent.postMessage(
+        {
+          type: "codeChanged",
+        },
+        "*",
+      );
+      break;
+    default:
+      break;
+  }
+});
+
 window.blocklyReady = true;
 
 // ------------------------------------------------------------------
@@ -396,7 +414,7 @@ window.addEventListener("message", function (event) {
             type: "codeChanged",
             code: code,
           },
-          "*"
+          "*",
         );
         break;
       }
@@ -408,7 +426,7 @@ window.addEventListener("message", function (event) {
             type: "workspaceData",
             data: JSON.stringify(workspaceJson),
           },
-          "*"
+          "*",
         );
         break;
       }
@@ -422,7 +440,7 @@ window.addEventListener("message", function (event) {
               type: "astJson",
               data: astJson,
             },
-            "*"
+            "*",
           );
         } else {
           window.parent.postMessage(
@@ -430,7 +448,7 @@ window.addEventListener("message", function (event) {
               type: "astJson",
               data: "{}",
             },
-            "*"
+            "*",
           );
         }
         break;
@@ -471,19 +489,11 @@ window.addEventListener("message", function (event) {
           type: "astJson",
           data: "{}",
         },
-        "*"
+        "*",
       );
     }
   }
 });
-
-// Send initial ready notification
-window.parent.postMessage(
-  {
-    type: "ready",
-  },
-  "*"
-);
 
 // 1. Оборачиваем  в setTimeout или ставим после inject'а, чтобы Blockly успел полностью загрузиться.
 setTimeout(() => {
@@ -495,8 +505,12 @@ setTimeout(() => {
   const defaultCategory = categories[1];
   // 5. Вызываем setSelectedItem, чтобы «открыть» её:
   toolbox.setSelectedItem(defaultCategory);
-
-  console.log(window.workspace);
+  window.parent.postMessage(
+    {
+      type: "ready",
+    },
+    "*",
+  );
 }, 0);
 
 // ------------------------------------------------------------------
@@ -552,7 +566,7 @@ function waitForToolboxReady(maxRetries = 30) {
  * - No event-loop starvation
  * - Deterministic completion
  */
-window.setModel = async function setModel(modelName, clearWorkspace = true) {
+window.setModel = async function setModel(modelName, clearWorkspace = false) {
   try {
     // ---- 0. Check if model is already active - do nothing if unchanged ----
     if (window.activeModel === modelName) {
