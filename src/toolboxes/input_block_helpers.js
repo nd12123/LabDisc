@@ -5,7 +5,7 @@ function getSensorLabel(id) {
   const meta = SENSOR_META[id];
   let name = SENSOR_NAMES[id] || meta?.name;
   if (!name) name = `Sensor ${id}`;
-  if (meta?.unit) return `${name} (${meta.unit})`;
+  if (meta?.unit) return `${name}`;
   return name;
 }
 

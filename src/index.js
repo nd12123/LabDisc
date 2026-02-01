@@ -24,6 +24,7 @@ console.warn = function (...args) {
 };
 
 import { javascriptGenerator } from "blockly/javascript";
+import { pythonGenerator } from "blockly/python";
 import "./styles/toolbox_style.css";
 import { MyOwnDarkTheme } from "./themes/blockly_theme.js";
 import { FieldColour } from "@blockly/field-colour";
@@ -40,6 +41,7 @@ import "./blocks/outputblocks.js";
 import "@generators/output.js";
 import "@generators/loops.js";
 import "@generators/input.js";
+import "./generators/python.js";
 
 import { getToolboxForModel } from "./toolboxes/toolbox_factory.js";
 
@@ -280,6 +282,12 @@ window.runWorkspace = function () {
   runCode(code);
 };
 
+window.generatePythonCode = function () {
+  const workspace = Blockly.getMainWorkspace();
+  if (!workspace) return "";
+  return pythonGenerator.workspaceToCode(workspace);
+};
+
 window.stopWorkspace = function () {
   clearScreen();
   console.clear();
@@ -412,6 +420,17 @@ window.addEventListener("message", function (event) {
         window.parent.postMessage(
           {
             type: "codeChanged",
+            code: code,
+          },
+          "*",
+        );
+        break;
+      }
+      case "getPythonCode": {
+        const code = window.generatePythonCode();
+        window.parent.postMessage(
+          {
+            type: "pythonCode",
             code: code,
           },
           "*",
