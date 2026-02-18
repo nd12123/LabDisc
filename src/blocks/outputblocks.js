@@ -4,8 +4,10 @@ import { SENSOR_META } from "../logic/sensorMetadata.js";
 import { SENSOR_NAMES } from "../logic/sensorNames.js";
 
 function getSensorOptions() {
-  const model = window.activeModel || "default";
-  const sensors = MODEL_SENSORS[model] || MODEL_SENSORS["default"];
+  const sensors =
+    Array.isArray(window.activeSensorIds) && window.activeSensorIds.length > 0
+      ? window.activeSensorIds
+      : MODEL_SENSORS[window.activeModel || "default"] || MODEL_SENSORS["default"];
 
   const options = sensors.map((id) => {
     let name = SENSOR_NAMES[id];

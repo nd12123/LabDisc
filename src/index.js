@@ -43,7 +43,11 @@ import "@generators/loops.js";
 import "@generators/input.js";
 import "./generators/python.js";
 
-import { getToolboxForModel } from "./toolboxes/toolbox_factory.js";
+import {
+  getToolboxForModel,
+  getToolboxForSensors,
+} from "./toolboxes/toolbox_factory.js";
+import { SENSOR_ID } from "./blocks/input/sensorIds.js";
 
 import "./blocks/patched/loop_patch.js";
 //import { getSensorValue } from './mock/labdisc.js';
@@ -60,6 +64,8 @@ import { converters } from "./conversion/index.js";
 
 // Single source of truth for active Blockly model
 window.activeModel = "default";
+// When set, overrides model-based sensor lookup for toolbox and display dropdowns
+window.activeSensorIds = null;
 
 const IS_IPAD =
   /iPad|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1;
@@ -491,6 +497,46 @@ window.addEventListener("message", function (event) {
         break;
       }
 
+      case "setSensors": {
+        if (payload.sensorIds != null) {
+          const clearWorkspace = payload.clearWorkspace === true;
+          window
+            .setSensors(JSON.parse(payload.code), clearWorkspace)
+            .then((ok) => {
+              window.parent.postMessage(
+                {
+                  type: "setSensorsResult",
+                  success: ok,
+                  sensorIds: JSON.parse(payload.code),
+                },
+                "*",
+              );
+            })
+            .catch((err) => {
+              console.error("[setSensors] postMessage handler error:", err);
+              window.parent.postMessage(
+                {
+                  type: "setSensorsResult",
+                  success: false,
+                  sensorIds: payload.code,
+                  error: String(err && err.message ? err.message : err),
+                },
+                "*",
+              );
+            });
+        } else {
+          window.parent.postMessage(
+            {
+              type: "setSensorsResult",
+              success: false,
+              error: "Missing sensorIds",
+            },
+            "*",
+          );
+        }
+        break;
+      }
+
       case "toggleToolbox": {
         window.toggleToolboxLogic(payload.code.toString() === "true");
         break;
@@ -593,8 +639,9 @@ window.setModel = async function setModel(modelName, clearWorkspace = false) {
       return true; // Success - no action needed
     }
 
-    // Single source of truth
+    // Single source of truth; clear sensor-ID override so model-based sensors apply
     window.activeModel = modelName;
+    window.activeSensorIds = null;
 
     // ---- 1. Wait for workspace to exist ----
     let retries = 30;
@@ -645,6 +692,129 @@ window.setModel = async function setModel(modelName, clearWorkspace = false) {
     return true;
   } catch (e) {
     console.error("[setModel] Error:", e);
+    return false;
+  }
+};
+
+/**
+ * Sets available sensors by ID and reloads the toolbox.
+ * When set, activeSensorIds overrides model-based lookup for inputs and display dropdowns.
+ * @param {number[]} sensorIds - Array of sensor IDs
+ * @param {boolean} clearWorkspace - Whether to clear workspace after switching (default: false)
+ * @returns {Promise<boolean>} - Resolves true on success, false on error
+ */
+/**
+ * Expands composite sensor IDs into their component sensors:
+ * GPS (7) -> GPS_LAT, GPS_LONG, GPS_SPEED, GPS_ANGLE (8,9,10,11)
+ * ACCELERATION (35) -> ACCELERATION_X, ACCELERATION_Y, ACCELERATION_Z (36,37,38)
+ * @param {number[]} sensorIds - Raw sensor IDs
+ * @returns {number[]} Expanded sensor IDs (order preserved, no duplicates)
+ */
+function expandSensorIds(sensorIds) {
+  const expanded = [];
+  const seen = new Set();
+  const GPS_COMPONENTS = [
+    SENSOR_ID.GPS_LAT,
+    SENSOR_ID.GPS_LONG,
+    SENSOR_ID.GPS_SPEED,
+    SENSOR_ID.GPS_ANGLE,
+  ];
+  const ACCELERATION_COMPONENTS = [
+    SENSOR_ID.ACCELERATION_X,
+    SENSOR_ID.ACCELERATION_Y,
+    SENSOR_ID.ACCELERATION_Z,
+  ];
+
+  for (const id of sensorIds) {
+    if (id === SENSOR_ID.GPS) {
+      for (const c of GPS_COMPONENTS) {
+        if (!seen.has(c)) {
+          seen.add(c);
+          expanded.push(c);
+        }
+      }
+    } else if (id === SENSOR_ID.ACCELERATION) {
+      for (const c of ACCELERATION_COMPONENTS) {
+        if (!seen.has(c)) {
+          seen.add(c);
+          expanded.push(c);
+        }
+      }
+    } else if (!seen.has(id)) {
+      seen.add(id);
+      expanded.push(id);
+    }
+  }
+  return expanded;
+}
+
+window.setSensors = async function setSensors(
+  sensorIds,
+  clearWorkspace = false,
+) {
+  try {
+    const raw =
+      Array.isArray(sensorIds) &&
+      sensorIds.every((x) => typeof x === "number" && Number.isFinite(x))
+        ? sensorIds
+        : [];
+    const ids = expandSensorIds(raw);
+
+    const same =
+      Array.isArray(window.activeSensorIds) &&
+      window.activeSensorIds.length === ids.length &&
+      ids.every((id, i) => window.activeSensorIds[i] === id);
+    if (same) {
+      console.log("[setSensors] Sensors already active:", ids);
+      return true;
+    }
+
+    window.activeSensorIds = ids.length > 0 ? ids : null;
+
+    let retries = 30;
+    while ((!window.workspace || window.workspace.disposed) && retries-- > 0) {
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+
+    if (!window.workspace || window.workspace.disposed) {
+      console.error("[setSensors] Workspace not ready");
+      return false;
+    }
+
+    if (clearWorkspace) {
+      window.workspace.clear();
+    }
+
+    window.workspace.updateToolbox(
+      getToolboxForSensors(ids.length > 0 ? ids : []),
+    );
+
+    let toolbox = null;
+    retries = 30;
+    while (retries-- > 0) {
+      toolbox = window.workspace.getToolbox();
+      const items = toolbox?.getToolboxItems?.();
+
+      if (toolbox && items && items.length > 0) {
+        break;
+      }
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+
+    if (!toolbox) {
+      console.error("[setSensors] Toolbox not available");
+      return false;
+    }
+
+    const categories = toolbox.getToolboxItems();
+    if (categories && categories.length > 0) {
+      toolbox.setSelectedItem(categories[0]);
+    }
+
+    console.log("[setSensors] Sensors set:", ids);
+    return true;
+  } catch (e) {
+    console.error("[setSensors] Error:", e);
     return false;
   }
 };
